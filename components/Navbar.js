@@ -3,11 +3,21 @@ import Link from 'next/link';
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="nav shadow p-2 justify-content-between mb-3">
       <Link className="navbar-brand" href="/">
-        My Ecommerce Site
+        My Ecommerce Site 🎄
       </Link>
-      {/* Add additional navigation links or elements here */}
+
+
+      <div className='d-flex'>
+        <Link href="/login" className='nav-link'>
+          Login
+        </Link>
+        <Link href="/register" className='nav-link'>
+          Register
+        </Link>
+      </div>
+
     </nav>
   );
 };
