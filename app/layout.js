@@ -1,6 +1,6 @@
-// RootLayout.js
 import React from 'react';
 import Head from 'next/head';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: 'Create Next App',
@@ -15,8 +15,8 @@ export default function RootLayout({ children }) {
         <meta name="description" content={metadata.description} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        {/* Add any other head tags here */}
       </Head>
+      <Toaster /> 
       <main>{children}</main>
     </>
   );
