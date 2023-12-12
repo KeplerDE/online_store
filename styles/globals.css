@@ -6,4 +6,6 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* Add more global styles here */
+.pointer {
+  cursor: pointer;
+ }
