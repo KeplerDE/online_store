@@ -1,4 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials"; 
+import GoogleProvider from "next-auth/providers/google";
 import User from "@/models/user";
 import bcrypt from "bcrypt"; 
 import dbConnect from "@/utils/dbConnect"; 
@@ -8,6 +9,11 @@ export const authOptions = {
     strategy: "jwt", // Используем JWT для сессии
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+
     CredentialsProvider({
       async authorize(credentials) {
         await dbConnect(); // Подключаемся к базе данных

@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
-  title: 'Create Next App',
+  title: 'Online store',
   description: 'Ecommerce Website using NextJS Fullstack',
 };
 
