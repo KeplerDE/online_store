@@ -21,7 +21,7 @@ const Navbar = () => {
       {status === "authenticated" ? (
         <div className="d-flex">
           <Link href="/dashboard/user">
-            <span className="nav-link">{data?.user?.name}</span>
+            <span className="nav-link">{data?.user?.name} {data?.user?.role}</span>
           </Link>
           <span className="nav-link pointer" onClick={() => signOut({ callbackUrl: "/login" })}>
             Logout
