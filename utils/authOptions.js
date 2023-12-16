@@ -26,12 +26,7 @@ export const authOptions = {
           throw new Error("Invalid email or password"); // Если пользователь не найден, бросаем ошибку
         }
 
-        // Проверяем, есть ли у пользователя пароль (проверка на случай, если регистрация была через соцсеть)
-        if (!user.password) {
-          throw new Error("Пожалуйста, войдите тем способом, который вы использовали при регистрации");
-        }
-
-        // Сверяем предоставленный пароль с хэшированным паролем из базы данных
+        // Проверяем пароль пользователя
         const isPasswordMatched = await bcrypt.compare(password, user.password);
         if (!isPasswordMatched) {
           throw new Error("Invalid email or password"); // Если пароли не совпадают, бросаем ошибку
@@ -43,9 +38,31 @@ export const authOptions = {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET, // Секретный ключ для подписи сессии, должен быть задан в переменных окружения
+  callbacks: {
+    async signIn({ user, account }) {
+      await dbConnect();
+
+      if (account.provider === "google") {
+        const { email, name, image } = user;
+
+        let dbUser = await User.findOne({ email });
+        if (!dbUser) {
+          // 
+          dbUser = new User({
+            name,
+            email,
+            image,
+            password: 'google-oauth-placeholder', // Фиктивный пароль
+          });
+          await dbUser.save();
+        }
+      }
+      return true;
+    },
+  },
+  
+  secret: process.env.NEXTAUTH_SECRET, // Секретный ключ для подписи сессии
   pages: {
     signIn: "/auth/signin", // URL страницы для входа
   },
-
 };
