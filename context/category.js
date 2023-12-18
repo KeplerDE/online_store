@@ -22,14 +22,41 @@ export const CategoryProvider = ({ children }) => {
   // Функция для создания новой категории
   const createCategory = async () => {
     try {
-      // Логика создания категории...
+      // Отправляем POST-запрос на сервер для создания новой категории
+      const response = await fetch(`${process.env.API}/admin/category`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name, // Данные новой категории
+        }),
+      });
+  
+      // Проверяем, успешно ли был обработан запрос
+      if (response.ok) {
+
+        toast.success("Категория успешно создана");
+        // Получаем данные только что созданной категории
+        const newlyCreatedCategory = await response.json();
+        // Очищаем поле ввода
+        setName("");
+        // Обновляем список категорий, добавляя новую категорию
+        setCategories([newlyCreatedCategory, ...categories]);
+      } else {
+        // Если запрос не успешен, получаем данные об ошибке
+        const errorData = await response.json();
+        // Выводим сообщение об ошибке
+        toast.error(errorData.err);
+      }
     } catch (err) {
-      // Обработка ошибок и вывод сообщения
+      // Логируем ошибку в консоль
       console.log("err => ", err);
+      // Выводим сообщение об ошибке при создании категории
       toast.error("Произошла ошибка при создании категории");
     }
   };
-
+  
   // Функция для получения всех категорий
   const fetchCategories = async () => {
     try {
