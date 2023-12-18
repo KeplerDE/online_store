@@ -33,3 +33,34 @@ export async function PUT(req, context) {
     );
   }
 }
+
+
+export async function DELETE(req, context) {
+    // Установка соединения с базой данных
+    await dbConnect();
+  
+    try {
+      // Удаление категории по ID, полученному из параметров маршрута
+      const deletedCategory = await Category.findByIdAndDelete(context.params.id);
+  
+      // В случае успешного удаления возвращаем информацию об удаленной категории
+      return new Response(JSON.stringify(deletedCategory), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (err) {
+      // В случае ошибки выводим сообщение об ошибке в консоль
+      console.error(err);
+  
+      // Возвращаем ответ с ошибкой и HTTP-статусом 500
+      return new Response(JSON.stringify({ error: "Server error. Please try again." }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+  }
+  
