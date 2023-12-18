@@ -58,14 +58,29 @@ export const CategoryProvider = ({ children }) => {
   };
   
   // Функция для получения всех категорий
-  const fetchCategories = async () => {
+
+const fetchCategories = async () => {
     try {
-      // Логика получения категорий...
+      // Выполняем GET-запрос к серверу для получения списка категорий
+      const response = await fetch(`${process.env.API}/category`);
+  
+      // Проверяем, успешно ли был обработан запрос
+      if (!response.ok) {
+        // Если ответ сервера не 'ok', выбрасываем исключение
+        throw new Error("Network response was not ok");
+      }
+  
+      // Парсим полученный ответ в формате JSON
+      const data = await response.json();
+  
+      // Обновляем состояние категорий новыми данными
+      setCategories(data);
     } catch (error) {
-      // Обработка ошибок и вывод сообщения
-      console.error("Ошибка при получении категорий:", error);
+      // В случае ошибки выводим сообщение об ошибке в консоль
+      console.error("Error fetching search results:", error);
     }
   };
+  
 
   // Функция для обновления категории
   const updateCategory = async () => {
