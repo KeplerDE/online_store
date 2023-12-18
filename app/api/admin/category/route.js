@@ -28,3 +28,28 @@ export async function POST(req) {
    );
  }
 }
+
+
+// Экспортируем асинхронную функцию GET для обработки GET-запросов
+export async function GET(req) {
+    // Устанавливаем соединение с базой данных
+    await dbConnect();
+  
+    try {
+      // Получаем категории из базы данных, сортируем их по дате создания в убывающем порядке
+      const categories = await Category.find({}).sort({ createdAt: "-1" });
+  
+      // Возвращаем категории в виде JSON-ответа
+      return NextResponse.json(categories);
+    } catch (err) {
+      // В случае ошибки выводим её в консоль
+      console.log(err);
+  
+      // Возвращаем ответ с ошибкой и статусом 500 (внутренняя ошибка сервера)
+      return NextResponse.json(
+        { err: "Server error. Please try again." },
+        { status: 500 }
+      );
+    }
+  }
+  
