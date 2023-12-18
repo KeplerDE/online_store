@@ -83,15 +83,51 @@ const fetchCategories = async () => {
   
 
   // Функция для обновления категории
-  const updateCategory = async () => {
+// ...
+const updateCategory = async () => {
     try {
-      // Логика обновления категории...
+      // Выполняем PUT-запрос к серверу для обновления категории
+      const response = await fetch(
+        `${process.env.API}/admin/category/${updatingCategory._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatingCategory), // Данные категории для обновления
+        }
+      );
+  
+      // Проверяем статус ответа сервера
+      if (!response.ok) {
+        // Если статус не 'ok', генерируем исключение
+        throw new Error("Network response was not ok");
+      }
+  
+      // Получаем обновленные данные категории из ответа сервера
+      const updatedCategory = await response.json();
+  
+      // Обновляем состояние категорий, заменяя обновленную категорию
+      setCategories((prevCategories) =>
+        prevCategories.map((c) =>
+          c._id === updatedCategory._id ? updatedCategory : c
+        )
+      );
+  
+      // Очищаем состояние текущей обновляемой категории
+      setUpdatingCategory(null);
+  
+      // Отображаем сообщение об успешном обновлении
+      toast.success("Категория успешно обновлена");
     } catch (err) {
-      // Обработка ошибок и вывод сообщения
+      // В случае ошибки выводим её в консоль
       console.log("err => ", err);
+  
+      // Отображаем сообщение об ошибке
       toast.error("Произошла ошибка при обновлении категории");
     }
   };
+  
 
   // Функция для удаления категории
   const deleteCategory = async () => {
