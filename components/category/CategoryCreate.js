@@ -28,6 +28,39 @@ export default function AdminCreateCategory() {
                 className="form-control p-2 my-2"
             />
 
+            {/* Кнопки для создания, обновления и удаления категории */}
+            <div className="d-flex justify-content-between">
+                <button
+                    className={`btn bg-${updatingCategory ? "info" : "primary"} text-light`}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        updatingCategory ? updateCategory() : createCategory();
+                    }}
+                >
+                    {updatingCategory ? "Update" : "Create"}
+                </button>
+
+                {/* Кнопки отображаются только если редактируется существующая категория */}
+                {updatingCategory && (
+                    <>
+                        <button
+                            className="btn bg-danger text-light"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                deleteCategory();
+                            }}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="btn bg-success text-light"
+                            onClick={() => setUpdatingCategory(null)}
+                        >
+                            Clear
+                        </button>
+                    </>
+                )}
+            </div>
         </>
     );
 }
