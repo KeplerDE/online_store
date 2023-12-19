@@ -1,6 +1,3 @@
-// context/category.js
-
-// Использование на стороне клиента
 "use client";
 import { createContext, useState, useContext } from "react";
 import toast from "react-hot-toast";
@@ -82,8 +79,6 @@ const fetchCategories = async () => {
   };
   
 
-  // Функция для обновления категории
-// ...
 const updateCategory = async () => {
     try {
       // Выполняем PUT-запрос к серверу для обновления категории
@@ -130,99 +125,42 @@ const updateCategory = async () => {
   
 
   // Функция для удаления категории
-  const deleteCategory = async () => {
+
+
+const deleteCategory = async () => {
     try {
-      // Логика удаления категории...
+      // Выполняем DELETE-запрос к серверу для удаления категории
+      const response = await fetch(
+        `${process.env.API}/admin/category/${updatingCategory._id}`, // Путь запроса включает идентификатор удаляемой категории
+        {
+          method: "DELETE", // Метод HTTP для удаления
+        }
+      );
+  
+      // Проверяем статус ответа сервера
+      if (!response.ok) {
+        // Если статус не 'ok', генерируем исключение
+        throw new Error("Network response was not ok");
+      }
+  
+      // Получаем данные удаленной категории из ответа сервера
+      const deletedCategory = await response.json();
+  
+      // Удаляем категорию из состояния, фильтруя массив категорий
+      setCategories((prevCategories) =>
+        prevCategories.filter((c) => c._id !== deletedCategory._id)
+      );
+  
+      // Очищаем состояние текущей обновляемой категории
+      setUpdatingCategory(null);
+  
+      // Отображаем сообщение об успешном удалении
+      toast.success("Категория успешно удалена");
     } catch (err) {
-      // Обработка ошибок и вывод сообщения
+      // В случае ошибки выводим её в консоль
       console.log("err => ", err);
-      toast.error("Произошла ошибка при удалении категории");
-    }
-  };
-
-  // Предоставление состояния и функций через контекст
-  return (
-    <CategoryContext.Provider
-      value={{
-        name,
-        setName,
-        createCategory,
-        categories,
-        setCategories,
-        fetchCategories,
-        updatingCategory,
-        setUpdatingCategory,
-        updateCategory,
-        deleteCategory,
-      }}
-    >
-      {children}
-    </CategoryContext.Provider>
-  );
-};
-
-// Хук для использования контекста
-export const useCategory = () => useContext(CategoryContext);
-// context/category.js
-
-// Использование на стороне клиента
-"use client";
-import { createContext, useState, useContext } from "react";
-import toast from "react-hot-toast";
-
-// Создание контекста для категорий
-export const CategoryContext = createContext();
-
-// Провайдер контекста
-export const CategoryProvider = ({ children }) => {
-  // Состояние для имени текущей категории
-  const [name, setName] = useState("");
-
-  // Состояние для хранения всех категорий
-  const [categories, setCategories] = useState([]);
-
-  // Состояние для обновления и удаления категории
-  const [updatingCategory, setUpdatingCategory] = useState(null);
-
-  // Функция для создания новой категории
-  const createCategory = async () => {
-    try {
-      // Логика создания категории...
-    } catch (err) {
-      // Обработка ошибок и вывод сообщения
-      console.log("err => ", err);
-      toast.error("Произошла ошибка при создании категории");
-    }
-  };
-
-  // Функция для получения всех категорий
-  const fetchCategories = async () => {
-    try {
-      // Логика получения категорий...
-    } catch (error) {
-      // Обработка ошибок и вывод сообщения
-      console.error("Ошибка при получении категорий:", error);
-    }
-  };
-
-  // Функция для обновления категории
-  const updateCategory = async () => {
-    try {
-      // Логика обновления категории...
-    } catch (err) {
-      // Обработка ошибок и вывод сообщения
-      console.log("err => ", err);
-      toast.error("Произошла ошибка при обновлении категории");
-    }
-  };
-
-  // Функция для удаления категории
-  const deleteCategory = async () => {
-    try {
-      // Логика удаления категории...
-    } catch (err) {
-      // Обработка ошибок и вывод сообщения
-      console.log("err => ", err);
+  
+      // Отображаем сообщение об ошибке
       toast.error("Произошла ошибка при удалении категории");
     }
   };
