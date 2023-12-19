@@ -23,7 +23,7 @@ export default function AdminCategory() {
                         <p className="lead">
                             List of Categories
                         </p>
-                        <CategoryList />
+                        <CategoryList />    
                     </div>
                 </div>
             </div>
