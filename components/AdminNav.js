@@ -8,8 +8,8 @@ export default function AdminNav() {
         <Link href="/dashboard/admin">
           <span className="nav-link">Admin</span>
         </Link>
-        <Link href="/dashboard/admin/product/create">
-          <span className="nav-link">Create Product</span>
+        <Link href="/dashboard/admin/category">
+          <span className="nav-link">Categories</span>
         </Link>
       </nav>
     </>
