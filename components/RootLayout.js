@@ -3,10 +3,12 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from './Navbar';
 import { CategoryProvider } from "@/context/category";
 import { SessionProvider } from 'next-auth/react';
+import { TagProvider } from "@/context/tag";
 
 export default function RootLayout({ children }) {
   return (
     <CategoryProvider>
+      <TagProvider>
       <Head>
         {/* Сюда помещаются элементы, предназначенные для <head> */}
         <title>Online store</title>
@@ -19,6 +21,7 @@ export default function RootLayout({ children }) {
       <Toaster /> 
       <Navbar />
       <main>{children}</main>
+      </TagProvider>
     </CategoryProvider>
   );
 }

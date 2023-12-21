@@ -41,45 +41,40 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    // Callback вызывается при успешном входе пользователя
     async signIn({ user, account }) {
       await dbConnect();
 
-      // Обработка пользователей, вошедших через Google
       if (account.provider === "google") {
         const { email, name, image } = user;
-
-        // Поиск пользователя в базе данных
         let dbUser = await User.findOne({ email });
         if (!dbUser) {
-          // Если пользователь не найден, создаем новую запись
           dbUser = new User({
             name,
             email,
             image,
-            password: 'google-oauth-placeholder', // Фиктивный пароль для аккаунтов Google
+            password: 'google-oauth-placeholder',
           });
           await dbUser.save();
         }
       }
       return true;
     },
-    // Обновление JWT с данными пользователя
-    jwt: async ({ token, user}) => {
-      const userByEmail = await User.findOne({ email: token.email });
-      userByEmail.password = undefined; // Удаление пароля из данных пользователя
-      token.user = userByEmail; // Добавление данных пользователя в токен
+    jwt: async ({ token, user }) => {
+      if (user) {
+        const userByEmail = await User.findOne({ email: user.email });
+        userByEmail.password = undefined;
+        token.user = userByEmail;
+      }
       return token;
     },
-    // Обновление сессии с данными из JWT
     session: async ({ session, token }) => {
-      session.user = token.user; // Добавление данных пользователя в сессию
+      session.user = token.user;
       return session;
     }
   },
   
-  secret: process.env.NEXTAUTH_SECRET, // Секретный ключ для подписания JWT
+  secret: process.env.NEXTAUTH_SECRET, 
   pages: {
-    signIn: "/auth/signin", // URL страницы для входа пользователя
+    signIn: "/auth/signin",
   },
 };

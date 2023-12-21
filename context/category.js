@@ -54,27 +54,25 @@ export const CategoryProvider = ({ children }) => {
     }
   };
   
-  // Функция для получения всех категорий
-
-const fetchCategories = async () => {
+  const fetchCategories = async () => {
     try {
-      // Выполняем GET-запрос к серверу для получения списка категорий
-      const response = await fetch(`${process.env.API}/category`);
+      const apiUrl = `${process.env.API}/admin/category`;
+      console.log(`Запрос к API: ${apiUrl}`); // Логируем URL запроса
   
-      // Проверяем, успешно ли был обработан запрос
+      const response = await fetch(apiUrl);
+  
+      console.log(`Статус ответа: ${response.status}`); // Логируем статус ответа
+  
       if (!response.ok) {
-        // Если ответ сервера не 'ok', выбрасываем исключение
+        const responseBody = await response.text(); // Получаем текст ответа для диагностики
+        console.error(`Тело ответа: ${responseBody}`);
         throw new Error("Network response was not ok");
       }
   
-      // Парсим полученный ответ в формате JSON
       const data = await response.json();
-  
-      // Обновляем состояние категорий новыми данными
       setCategories(data);
     } catch (error) {
-      // В случае ошибки выводим сообщение об ошибке в консоль
-      console.error("Error fetching search results:", error);
+      console.error("Ошибка при получении категорий:", error);
     }
   };
   
