@@ -19,7 +19,7 @@ export const TagProvider = ({ children }) => {
         },
         body: JSON.stringify({
           name,
-          parent: parentCategory,
+          parentCategory,
         }),
       });
 

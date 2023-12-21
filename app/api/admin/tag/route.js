@@ -12,12 +12,12 @@ export async function POST(req) {
 
     try {
         // Извлекаем name и parent из тела запроса
-        const { name, parent } = _req;
+        const { name, parentCategory } = _req;
 
         // Создаем новый тег с использованием модели Tag
         const tag = await Tag.create({
             name,
-            parent,
+            parentCategory,
             slug: slugify(name), // Генерируем slug из имени тега
         });
 

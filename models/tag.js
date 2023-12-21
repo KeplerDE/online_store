@@ -16,10 +16,10 @@ const tagSchema = new mongoose.Schema({
     index: true,
     required: true
   },
-  parent: {
+  parentCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true
+    required: false // Сделано необязательным
   }
 }, { timestamps: true });
 
