@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Tag from "@/models/tag";
+import slugify from "slugify";
 
 export async function PUT(req, context) {
     // Подключаемся к базе данных
@@ -8,16 +9,19 @@ export async function PUT(req, context) {
 
     // Преобразуем запрос в формат JSON
     const _req = await req.json();
+    const { name } = body;
 
     try {
         // Обновляем тег, используя ID из параметров запроса и данные из тела запроса
         const updatingTag = await Tag.findByIdAndUpdate(
-            context.params.id,
-            { ..._req },
-            { new: true }
+            context.params.id,{
+            ...body,
+            slug: slugify(name),
+        }
+        { new: true }
         );
 
-        // Возвращаем обновленный тег в формате JSON
+        // Возвращаем обновленный тег в формате     JSON
         return NextResponse.json(updatingTag);
     } catch (err) {
         // Логирование ошибки в консоль

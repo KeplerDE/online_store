@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
+import  uniqueValidator from "mongoose-unique-validator"
 
 const tagSchema = new mongoose.Schema({
   name: {
@@ -19,11 +19,13 @@ const tagSchema = new mongoose.Schema({
   parentCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: false // Сделано необязательным
+    required: true
   }
-}, { timestamps: true });
+}, 
+{ timestamps: true }
+);
 
-tagSchema.plugin(uniqueValidator, { message: 'Поле {PATH} должно быть уникальным.' });
 
-const Tag = mongoose.model("Tag", tagSchema);
-module.exports = Tag;
+tagSchema.plugin(uniqueValidator, " is already taken.");
+
+export default mongoose.models.Tag || mongoose.model("Tag", tagSchema);

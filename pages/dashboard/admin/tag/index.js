@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTag } from '@/context/tag';
 import TagCreate from '@/components/tag/TagCreate';
+import TagList from '@/components/tag/TagList'
 
 export default function Tags() {
   // Использование контекста для работы с тегами
@@ -23,6 +24,7 @@ export default function Tags() {
       <div className="row mt-5">
         <div className="col">
           <p className="lead mb-4">List of Tags</p>
+          <TagList />
         </div>
       </div>
     </div>

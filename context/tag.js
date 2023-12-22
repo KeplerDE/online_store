@@ -9,55 +9,61 @@ export const TagProvider = ({ children }) => {
   const [tags, setTags] = useState([]);
   const [updatingTag, setUpdatingTag] = useState(null);
 
-  // Функция для создания нового тега
-  const createTag = async () => {
-    try {
-      const response = await fetch(`${process.env.API}/admin/tag`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          parentCategory,
-        }),
-      });
+// Функция для создания нового тега 
+const createTag = async () => {
+  try {
+    const response = await fetch(`${process.env.API}/admin/tag`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        parent: parentCategory,
+      }),
+    });
 
-      if (response.ok) {
-        toast.success("Tag created successfully");
-        const newlyCreatedTag = await response.json();
-        setName("");
-        setParentCategory("");
-        setTags([newlyCreatedTag, ...tags]);
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.err);
-      }
-    } catch (err) {
-      console.log("err => ", err);
-      toast.error("An error occurred while creating a tag");
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast.error(data.err); // Показываем ошибку, полученную от сервера.
+    } else {
+      toast.success("Tag created"); // Подтверждаем создание тега.
+      setName("");
+      setParentCategory("");
+      setTags({ data, ...tags }); // Обновляем состояние тегов с новыми данными.
     }
-  };
+  } catch (err) {
+    console.log("Error fetching tags:", err);
+    toast.error("An error occurred while creating a tag"); // Показываем общее сообщение об ошибке.
+  }
+};
+
 
   // Функция для получения списка тегов
   const fetchTags = async () => {
     try {
-      const response = await fetch(`${process.env.API}/tags`, {
+      const response = await fetch(`${process.env.API}/admin/tag`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  
       const data = await response.json();
+  
+      if (!response.ok) {
+        toast.error(data); // Используем полученные данные для отображения ошибки.
+        throw new Error(data); // Создаем ошибку с полученным сообщением.
+      }
+  
       setTags(data);
     } catch (error) {
       console.error("Error fetching tags:", error);
-      toast.error("An error occurred while fetching tags");
+      toast.error("An error occurred while fetching tags"); // Здесь можно использовать error.message для более точного сообщения об ошибке.
     }
   };
+  
 
   // Функция для обновления тега
   const updateTag = async () => {

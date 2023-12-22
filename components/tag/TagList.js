@@ -1,15 +1,12 @@
-"use client";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useTag } from "@/context/tag";
-import TagCreate from "@/components/tag/TagCreate";
-import TagList from "@/components/tag/TagList";
 
-export default function Tags() {
-  // Использование контекста для управления тегами
-  const { fetchTags } = useTag();
+export default function TagsList() {
+  // Context
+  const { tags, fetchTags, setUpdatingTag } = useTag();
 
-  // Получение списка тегов при монтировании компонента
   useEffect(() => {
+    // Fetch tags when the component mounts
     fetchTags();
   }, []);
 
@@ -17,14 +14,17 @@ export default function Tags() {
     <div className="container mb-5">
       <div className="row">
         <div className="col">
-          <p className="lead">Create Tags</p>
-          <TagCreate />
-        </div>
-      </div>
-      <div className="row mt-5">
-        <div className="col">
-          <p className="lead mb-4">List of Tags</p>
-          <TagList />
+          {tags.map((tag) => (
+            <button
+              key={tag.id} // Add a unique key to each button
+              className="btn"
+              onClick={() => {
+                setUpdatingTag(tag);
+              }}
+            >
+              {tag.name}
+            </button>
+          ))}
         </div>
       </div>
     </div>
