@@ -3,7 +3,7 @@ import { useTag } from "@/context/tag";
 import { useCategory } from "@/context/category";
 import { useEffect } from "react";
 
-export default function AdminTagCreate() {
+export default function TagCreate() {
   // Использование контекста для работы с тегами
   const {
     name,
@@ -51,7 +51,7 @@ export default function AdminTagCreate() {
       </div>
       <div className="d-flex justify-content-between">
         <button
-          className={`btn ${updatingTag ? "btn-info" : "btn-primary"} text-light`}
+          className={`btn bg-${updatingTag ? "info" : "primary"} text-light`}
           onClick={(e) => {
             e.preventDefault();
             updatingTag ? updateTag() : createTag();
@@ -62,7 +62,7 @@ export default function AdminTagCreate() {
         {updatingTag && (
           <>
             <button
-              className="btn btn-danger text-light"
+              className="btn bg-danger text-light"
               onClick={(e) => {
                 e.preventDefault();
                 deleteTag();
@@ -71,7 +71,7 @@ export default function AdminTagCreate() {
               Delete
             </button>
             <button
-              className="btn btn-success text-light"
+              className="btn bg-success text-light"
               onClick={() => setUpdatingTag(null)}
             >
               Clear

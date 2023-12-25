@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 import  uniqueValidator from "mongoose-unique-validator"
 
 const tagSchema = new mongoose.Schema({
@@ -19,7 +19,7 @@ const tagSchema = new mongoose.Schema({
   parentCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true
+    required: false
   }
 }, 
 { timestamps: true }

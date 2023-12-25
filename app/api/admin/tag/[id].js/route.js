@@ -8,16 +8,17 @@ export async function PUT(req, context) {
     await dbConnect();
 
     // Преобразуем запрос в формат JSON
-    const _req = await req.json();
-    const { name } = body;
+    const body = await req.json();
+    
 
     try {
+        console.log("request", body)
         // Обновляем тег, используя ID из параметров запроса и данные из тела запроса
         const updatingTag = await Tag.findByIdAndUpdate(
             context.params.id,{
             ...body,
-            slug: slugify(name),
-        }
+            slug: slugify(body.name),
+        },
         { new: true }
         );
 

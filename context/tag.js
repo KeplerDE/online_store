@@ -9,35 +9,38 @@ export const TagProvider = ({ children }) => {
   const [tags, setTags] = useState([]);
   const [updatingTag, setUpdatingTag] = useState(null);
 
-// Функция для создания нового тега 
-const createTag = async () => {
-  try {
-    const response = await fetch(`${process.env.API}/admin/tag`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        parent: parentCategory,
-      }),
-    });
+  // Функция для создания нового тега
+  const createTag = async () => {
+    try {
+      const response = await fetch(`${process.env.API}/admin/tag`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          parentCategory: parentCategory,
+          
+        }),
+        
+      });
+      
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      toast.error(data.err); // Показываем ошибку, полученную от сервера.
-    } else {
-      toast.success("Tag created"); // Подтверждаем создание тега.
-      setName("");
-      setParentCategory("");
-      setTags({ data, ...tags }); // Обновляем состояние тегов с новыми данными.
+      if (!response.ok) {
+        toast.error(data.err); // Показываем ошибку, полученную от сервера.
+      } else {
+        toast.success("Tag created"); // Подтверждаем создание тега.
+        setName("");
+        setParentCategory("");
+        setTags({ data, ...tags }); // Обновляем состояние тегов с новыми данными.
+      }
+    } catch (err) {
+      console.log("Error fetching tags:", err);
+      toast.error("An error occurred while creating a tag"); // Показываем общее сообщение об ошибке.
     }
-  } catch (err) {
-    console.log("Error fetching tags:", err);
-    toast.error("An error occurred while creating a tag"); // Показываем общее сообщение об ошибке.
-  }
-};
+  };
 
 
   // Функция для получения списка тегов
@@ -68,6 +71,7 @@ const createTag = async () => {
   // Функция для обновления тега
   const updateTag = async () => {
     try {
+      console.log("Its meeeeeeeeeeeeeeeeeeeeeeeeeee",updatingTag)
       const response = await fetch(
         `${process.env.API}/admin/tag/${updatingTag._id}`,
         {
@@ -98,6 +102,7 @@ const createTag = async () => {
   // Функция для удаления тега
   const deleteTag = async () => {
     try {
+      console.log("Its meeeeeeeeeeeeeeeeeeeeeeeeeee",_id)
       const response = await fetch(
         `${process.env.API}/admin/tag/${updatingTag._id}`,
         { method: "DELETE" }
