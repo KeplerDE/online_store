@@ -5,10 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
   const { data, status } = useSession();
-  console.log(data, status);
 
-
-  
   return (
     <nav className="nav shadow p-2 justify-content-between mb-3">
       <Link href="/">

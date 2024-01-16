@@ -57,11 +57,8 @@ export const CategoryProvider = ({ children }) => {
   const fetchCategories = async () => {
     try {
       const apiUrl = `${process.env.API}/admin/category`;
-      console.log(`Запрос к API: ${apiUrl}`); // Логируем URL запроса
   
       const response = await fetch(apiUrl);
-  
-      console.log(`Статус ответа: ${response.status}`); // Логируем статус ответа
   
       if (!response.ok) {
         const responseBody = await response.text(); // Получаем текст ответа для диагностики

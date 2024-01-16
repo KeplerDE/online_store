@@ -71,7 +71,6 @@ export const TagProvider = ({ children }) => {
   // Функция для обновления тега
   const updateTag = async () => {
     try {
-      console.log("Its meeeeeeeeeeeeeeeeeeeeeeeeeee",updatingTag)
       const response = await fetch(
         `${process.env.API}/admin/tag/${updatingTag._id}`,
         {
@@ -102,7 +101,6 @@ export const TagProvider = ({ children }) => {
   // Функция для удаления тега
   const deleteTag = async () => {
     try {
-      console.log("Its meeeeeeeeeeeeeeeeeeeeeeeeeee",_id)
       const response = await fetch(
         `${process.env.API}/admin/tag/${updatingTag._id}`,
         { method: "DELETE" }

@@ -18,7 +18,6 @@ export async function POST(req) {
 
    return NextResponse.json(category); // Возвращаем созданную категорию в формате JSON
  } catch (err) {
-   console.log(err); // Выводим ошибку в консоль
    // Возвращаем ошибку клиенту с HTTP-статусом 500 (Internal Server Error)
    return NextResponse.json(
      {
