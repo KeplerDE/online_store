@@ -238,6 +238,27 @@ export default function ProductCreate() {
 
 
 
+<div className="d-flex justify-content-between mt-3">
+  <button
+    className={`btn btn-raised btn-${updatingProduct ? "info" : "primary"}`}
+    onClick={() => (updatingProduct ? updateProduct() : createProduct())}
+  >
+    {updatingProduct ? "Update" : "Create"}
+  </button>
+  {updatingProduct && (
+    <>
+      <button onClick={() => deleteProduct()} className="btn btn-danger">
+        Delete
+      </button>
+      <button onClick={() => window.location.reload()} className="btn btn-danger">
+        Clear
+      </button>
+    </>
+  )}
+</div>
+
+
+
 
       {/* Display Product Data for Debugging */}
       <pre>{JSON.stringify(product, null, 4)}</pre>
