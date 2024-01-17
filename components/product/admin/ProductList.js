@@ -1,35 +1,30 @@
 "use client";
 import { useEffect } from "react";
 import { useProduct } from "@/context/product";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import Image from "next/image";
 
 export default function ProductList() {
   const {
     products,
-    currentPage,
-    totalPages,
     fetchProducts,
     setUpdatingProduct,
   } = useProduct();
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const page = searchParams.get("page");
+  const page = router.query.page;
 
   useEffect(() => {
     fetchProducts(page);
-  }, [page]);
+  }, [page, fetchProducts]);
 
-  const handleNavigation = (url, event) => {
-    event.preventDefault();
-    router.push(url);
+  const handleClick = (product) => {
+    setUpdatingProduct(product);
+    router.push("/dashboard/admin/product");
   };
 
   return (
     <div className="container my-5">
       <div className="row gx-3">
-        {/* <pre>{JSON.stringify(products, null, 4)}</pre> */}
         {products?.map((product) => (
           <div key={product?._id} className="col-lg-6 my-3">
             <div style={{ height: "200px", overflow: "hidden" }}>
@@ -38,32 +33,25 @@ export default function ProductList() {
                 alt={product?.title}
                 width={500}
                 height={300}
-                style={{
-                  objectFit: "cover",
-                  height: "100%",
-                  width: "100%",
-                }}
+                objectFit="cover"
+                layout="responsive"
               />
             </div>
             <div className="card-body">
-              <h5 className="card-title">
-                <a
-                  href={`/product/${product?.slug}`}
-                  onClick={(e) => handleNavigation(`/product/${product?.slug}`, e)}
-                >
-                  ${product?.price?.toFixed(2)} {product?.title}
-                </a>
+              <h5
+                className="card-title"
+                onClick={() => handleClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
+                ${product?.price?.toFixed(2)} {product?.title}
               </h5>
-              <p className="card-text">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      product?.description?.length > 160
-                        ? `${product?.description?.substring(0, 160)}..`
-                        : product?.description,
-                  }}
-                />
-              </p>
+              <p className="card-text" dangerouslySetInnerHTML={{
+                  __html:
+                    product?.description?.length > 160
+                      ? `${product?.description.substring(0, 160)}..`
+                      : product?.description,
+                }}
+              />
             </div>
           </div>
         ))}

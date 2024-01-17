@@ -1,6 +1,7 @@
 // pages/dashboard/admin.js
 import React from 'react';
 import AdminLayout from './layout';
+import ProductList from "@/components/product/admin/ProductList";
 
 // Содержимое административной панели
 function AdminDashboard() {
@@ -8,7 +9,7 @@ function AdminDashboard() {
     <div className="container">
       <div className="row">
         <div className="col">
-          <p>Admin Dashboard</p>
+        <ProductList />
           <hr />
           ...
         </div>
