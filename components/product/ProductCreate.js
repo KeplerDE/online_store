@@ -16,6 +16,7 @@ export default function ProductCreate() {
     uploading,
     setUploading,
     uploadImages,
+    deleteImage,
   } = useProduct();
   
   const { categories, fetchCategories } = useCategory();
@@ -26,6 +27,8 @@ export default function ProductCreate() {
     fetchTags();
   }, []);
   
+  const imagePreviews = updatingProduct ? updatingProduct?.images ?? [] : product?.images ?? [];
+
   return (
     <div>
       <p className="lead">{updatingProduct ? "Update" : "Create"} Product</p>
@@ -213,7 +216,29 @@ export default function ProductCreate() {
           />
         </label>
       </div>
-      
+      <div className="d-flex justify-content-center">
+  {imagePreviews?.map((img) => (
+    <div key={img?.public_id}>
+      <img
+        src={img?.secure_url}
+        className="img-thumbnail mx-1 shadow"
+        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+        alt="Preview"
+      />
+      <br />
+      <div
+        className="text-center pointer"
+        onClick={() => deleteImage(img?.public_id)}
+      >
+        ❌
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
+
       {/* Display Product Data for Debugging */}
       <pre>{JSON.stringify(product, null, 4)}</pre>
     </div>

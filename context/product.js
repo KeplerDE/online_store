@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+import Resizer from "react-image-file-resizer";
 
 export const ProductContext = createContext();
 
