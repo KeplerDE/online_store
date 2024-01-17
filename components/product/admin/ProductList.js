@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+"use client";
+import { useEffect } from "react";
 import { useProduct } from "@/context/product";
-import { useRouter } from "next/router";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
-const ProductList = () => {
+export default function ProductList() {
   const {
     products,
     currentPage,
@@ -11,75 +13,61 @@ const ProductList = () => {
     setUpdatingProduct,
   } = useProduct();
   const router = useRouter();
-
-  const { page } = router.query;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page");
 
   useEffect(() => {
-    fetchProducts(Number(page));
+    fetchProducts(page);
   }, [page]);
 
-  const handleNavigation = (url) => {
+  const handleNavigation = (url, event) => {
+    event.preventDefault();
     router.push(url);
   };
 
   return (
     <div className="container my-5">
-      <div className="row">
-        {/* Render your product list here */}
-        {products.map((product) => (
-          <div key={product.id} className="col-6 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{product.name}</h5>
-                <p className="card-text">{product.description}</p>
+      <div className="row gx-3">
+        {/* <pre>{JSON.stringify(products, null, 4)}</pre> */}
+        {products?.map((product) => (
+          <div key={product?._id} className="col-lg-6 my-3">
+            <div style={{ height: "200px", overflow: "hidden" }}>
+              <Image
+                src={product?.images[0]?.secure_url || "/images/default.jpg"}
+                alt={product?.title}
+                width={500}
+                height={300}
+                style={{
+                  objectFit: "cover",
+                  height: "100%",
+                  width: "100%",
+                }}
+              />
+            </div>
+            <div className="card-body">
+              <h5 className="card-title">
                 <a
-                  href={`/products/${product.id}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigation(`/products/${product.id}`);
-                  }}
-                  className="btn btn-primary"
+                  href={`/product/${product?.slug}`}
+                  onClick={(e) => handleNavigation(`/product/${product?.slug}`, e)}
                 >
-                  View Details
+                  ${product?.price?.toFixed(2)} {product?.title}
                 </a>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => setUpdatingProduct(product)}
-                >
-                  Edit
-                </button>
-              </div>
+              </h5>
+              <p className="card-text">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      product?.description?.length > 160
+                        ? `${product?.description?.substring(0, 160)}..`
+                        : product?.description,
+                  }}
+                />
+              </p>
             </div>
           </div>
         ))}
-
-        {/* Pagination */}
-        <div className="col-12 mt-4">
-          <nav aria-label="Page navigation">
-            <ul className="pagination">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <li
-                  key={index}
-                  className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
-                >
-                  <a
-                    href={`/products?page=${index + 1}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation(`/products?page=${index + 1}`);
-                    }}
-                    className="page-link"
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
       </div>
     </div>
   );
-};
-
-export default ProductList;
+}
