@@ -23,7 +23,10 @@ export default function ProductCard({ product }) {
         />
       </div>
       <div className="card-body">
-        <h5 className="card-title">{title}</h5>
+        <Link href={`/product/${product?.slug}`}>
+            <h5 className="card-title">{product?.title}</h5>
+        </Link>
+
         <p>{formatDescription(description)}</p>
       </div>
       <div className="card-footer d-flex justify-content-between">
