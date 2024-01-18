@@ -49,18 +49,17 @@ export default function Home() {
   }, [page]); // Зависимость от изменения параметра страницы в URL
 
   return (
-    <div>
-      <h1 className="d-flex ">
-        Latest Product
+    <div className="container">
+      <h1 className="text-center my-4">
+        <strong>Latest Products</strong>
       </h1>
-      <div className="row">
+      <div className="row g-4">
         {products?.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <div key={product.id} className="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
-
-
-
 
       <Pagination 
         currentPage={currentPage}
