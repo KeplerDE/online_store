@@ -1,7 +1,7 @@
 // pages/dashboard/admin.js
 import React from 'react';
 import AdminLayout from './layout';
-import ProductList from "@/components/product/admin/ProductList";
+import ProductList from "@/components/admin/ProductList";
 
 // Содержимое административной панели
 function AdminDashboard() {

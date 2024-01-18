@@ -12,7 +12,7 @@ export async function GET(req) {
     // Разбор параметров запроса из URL
     const searchParams = queryString.parseUrl(req.url).query;
     const { page } = searchParams || {};
-    const pageSize = 6; // Количество продуктов на странице
+    const pageSize = 2; // Количество продуктов на странице
 
     // Определение текущей страницы и сдвига
     const currentPage = Number(page) || 1;

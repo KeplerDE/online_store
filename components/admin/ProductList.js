@@ -3,15 +3,23 @@ import { useEffect } from "react";
 import { useProduct } from "@/context/product";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Pagination from '@/components/product/Pagination'
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 
 export default function ProductList() {
   const {
     products,
     fetchProducts,
     setUpdatingProduct,
+    currentPage,
+    totalPages,
+
   } = useProduct();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const page = router.query.page;
+
 
   useEffect(() => {
     fetchProducts(page);
@@ -56,6 +64,11 @@ export default function ProductList() {
           </div>
         ))}
       </div>
+      <Pagination 
+      currentPage={currentPage}
+      totalPages={totalPages}
+      pathname={pathname}
+      />
     </div>
   );
 }
