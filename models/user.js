@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import Category from '@/models/category'
 
 const userSchema = new mongoose.Schema({
   name: {

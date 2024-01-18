@@ -21,6 +21,8 @@ export async function GET(req) {
     // Получение общего количества продуктов и данных продуктов для текущей страницы
     const totalProducts = await Product.countDocuments({});
     const products = await Product.find({})
+      .populate("category", "name slug")
+      .populate("tags", "name slug")
       .skip(skip)
       .limit(pageSize)
       .sort({ createdAt: '-1' });
