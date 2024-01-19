@@ -6,8 +6,10 @@ export async function GET(req, context) {
   await dbConnect(); 
 
   try { 
-    const product = await Product.findOne({ slug: context.params.slug }); // Ищем продукт по его slug в базе данных
-    return NextResponse.json(product); // Возвращаем продукт в формате JSON
+    const product = await Product.findOne({ slug: context.params.slug })
+      .populate('category', 'name slug')
+      .populate('tags', 'name slug')
+    return NextResponse.json(product); 
   } catch (err) { 
     console.log(err); 
     return NextResponse.json(
