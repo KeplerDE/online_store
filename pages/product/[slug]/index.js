@@ -51,7 +51,8 @@ export default function ProductViewPage({ product }) {
             <div className="card-body">
               <h5 className="card-title">{product.title}</h5>
               <div className="card-text">
-                <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                <div dangerouslySetInnerHTML={{ __html: product.description.replace(/\./g, "<br/><br/>")
+                 }} />
               </div>
             </div>
             <div className="card-footer d-flex justify-content-between">
