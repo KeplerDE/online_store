@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import Category from '@/models/category'
-import Tag from '@/models/tag'
-import User from '@/models/user'
+import Category from '@/models/category';
+import Tag from '@/models/tag';
+import User from '@/models/user';
 
 const { Schema } = mongoose;
 
@@ -90,7 +90,12 @@ const productSchema = new Schema({
     type: Number,
     default: 0,
   },
-  likes: [likeSchema],
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   ratings: [ratingSchema],
 }, { timestamps: true });
 

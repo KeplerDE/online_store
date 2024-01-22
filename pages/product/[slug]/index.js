@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import ProductImage from "@/components/product/ProductImage";
+import ProductLike from "@/components/product/ProductLike";
+
 
 dayjs.extend(relativeTime);
 
@@ -60,6 +62,7 @@ export default function ProductViewPage({ product }) {
               <small className="text-muted">Tags: {product.tags.map(tag => tag.name).join(" ")}</small>
             </div>
             <div className="card-footer d-flex justify-content-between">
+              <ProductLike product={product} />
               <small className="text-muted">Ratings</small>
               <small className="text-muted">
                 Added {dayjs(product.createdAt).fromNow()}
