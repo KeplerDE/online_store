@@ -1,19 +1,13 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useProduct } from "@/context/product";
 
-export default function ProductImage({ product }) {
-  const [showImagePreviewModal, setShowImagePreviewModal] = useState(false);
-  const [currentImagePreviewUrl, setCurrentImagePreviewUrl] = useState("");
+export default function ProductImage({ product}) {
 
-  const openModal = (url) => {
-    setCurrentImagePreviewUrl(url);
-    setShowImagePreviewModal(true);
-  };
-
-  const closeModal = () => {
-    setShowImagePreviewModal(false);
-    setCurrentImagePreviewUrl("");
-  };
+  const { 
+    showImagePreviewModal, 
+    currentImagePreviewUrl, 
+    closeModal,
+    openModal } = useProduct();
 
   const ImageThumbnail = ({ src, alt }) => (
     <div

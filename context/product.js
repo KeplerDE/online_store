@@ -15,6 +15,48 @@ export const ProductProvider = ({ children }) => {
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
 
+  // image preview modal
+  const [showImagePreviewModal, setShowImagePreviewModal] = useState(false);
+  const [currentImagePreviewUrl, setCurrentImagePreviewUrl] = useState("");
+
+  // rating system
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [currentRating, setCurrentRating] = useState(0);
+  const [comment, setComment] = useState("");
+ 
+  const [isRatingModalVisible, setIsRatingModalVisible] = useState(false);
+  const [ratingValue, setRatingValue] = useState(0);
+  const [userComment, setUserComment] = useState("");
+
+  // Функция для открытия модального окна просмотра изображений и оценок
+  const handleOpenImagePreview = (imageUrl) => {
+    setCurrentImagePreviewUrl(imageUrl);
+    setShowImagePreviewModal(true);
+  };
+
+  // Функция для закрытия модальных окон
+  const handleCloseModal = () => {
+    setShowImagePreviewModal(false);
+    setIsRatingModalVisible(false);
+  };
+
+  // Обработчик клика вне модального окна
+  const handleOutsideClick = (event) => {
+    if (event.target.classList.contains("modal")) {
+      handleCloseModal();
+    }
+  };
+
+  const openModal = (url) => {
+    setCurrentImagePreviewUrl(url);
+    setShowImagePreviewModal(true);
+  };
+
+  const closeModal = () => {
+    setShowImagePreviewModal(false);
+    setCurrentImagePreviewUrl("");
+  };
+
   const uploadImages = (e) => {
     const files = e.target.files;
     const allUploadedFiles = updatingProduct
@@ -231,6 +273,18 @@ export const ProductProvider = ({ children }) => {
         fetchProducts,
         updateProduct,
         deleteProduct,
+        showImagePreviewModal,
+        setShowImagePreviewModal,
+        currentImagePreviewUrl,
+        setCurrentImagePreviewUrl,
+        openModal,
+        closeModal,
+        showRatingModal,
+        setShowRatingModal,
+        currentRating,
+        setCurrentRating,
+        comment,
+        setComment,
       }}
     >
       {children}
