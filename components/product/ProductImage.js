@@ -1,13 +1,15 @@
 import Image from "next/image";
 import { useProduct } from "@/context/product";
+import Modal from "@/components/Modal"; 
 
-export default function ProductImage({ product}) {
+export default function ProductImage({ product }) {
 
   const { 
     showImagePreviewModal, 
     currentImagePreviewUrl, 
     closeModal,
-    openModal } = useProduct();
+    openModal 
+  } = useProduct();
 
   const ImageThumbnail = ({ src, alt }) => (
     <div
@@ -15,39 +17,32 @@ export default function ProductImage({ product}) {
       style={{ height: "350px", overflow: "hidden" }}
       onClick={() => openModal(src)}
     >
-    <Image
-      src={src}
-      alt={alt}
-      layout="responsive" 
-      width={250} 
-      height={250} 
-      objectFit="contain" 
-    />
+      <Image
+        src={src}
+        alt={alt}
+        layout="responsive" 
+        width={250} 
+        height={250} 
+        objectFit="contain" 
+      />
     </div>
   );
 
   return (
     <>
       {showImagePreviewModal && (
-        <div className="modal fade show" style={{ display: "block" }}>
-          <div className="modal-dialog modal-dialog-centered modal-lg" style={{ height: "calc(100% - 60px)" }}>
-            <div className="modal-content" style={{ height: "calc(100% - 60px)" }}>
-              <div className="modal-body overflow-auto">
-                <Image
-                  src={currentImagePreviewUrl}
-                  alt={product?.title}
-                  layout="fill" // Change to fill to use the parent dimensions
-                  objectFit="contain"
-                />
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>
-                  Close
-                </button>
-              </div>
-            </div>
+        <Modal>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <Image
+              src={currentImagePreviewUrl}
+              alt={product?.title}
+              width={450} 
+              height={325} 
+              objectFit="contain"
+              layout="intrinsic" 
+            />
           </div>
-        </div>
+        </Modal>
       )}
       <div className="d-flex justify-content-center align-items-center">
         {product?.images?.length > 0 ? (
