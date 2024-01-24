@@ -47,7 +47,7 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  const openModal = (url) => {
+  const openImagePreviewModal = (url) => {
     setCurrentImagePreviewUrl(url);
     setShowImagePreviewModal(true);
   };
@@ -277,7 +277,7 @@ export const ProductProvider = ({ children }) => {
         setShowImagePreviewModal,
         currentImagePreviewUrl,
         setCurrentImagePreviewUrl,
-        openModal,
+        openImagePreviewModal,
         closeModal,
         showRatingModal,
         setShowRatingModal,

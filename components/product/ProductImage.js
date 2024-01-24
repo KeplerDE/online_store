@@ -8,14 +8,14 @@ export default function ProductImage({ product }) {
     showImagePreviewModal, 
     currentImagePreviewUrl, 
     closeModal,
-    openModal 
+    openImagePreviewModal
   } = useProduct();
 
   const ImageThumbnail = ({ src, alt }) => (
     <div
       className="pointer"
       style={{ height: "350px", overflow: "hidden" }}
-      onClick={() => openModal(src)}
+      onClick={() => openImagePreviewModal(src)}
     >
       <Image
         src={src}
