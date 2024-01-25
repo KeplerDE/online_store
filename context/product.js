@@ -55,6 +55,7 @@ export const ProductProvider = ({ children }) => {
   const closeModal = () => {
     setShowImagePreviewModal(false);
     setCurrentImagePreviewUrl("");
+    setShowRatingModal(false);
   };
 
   const uploadImages = (e) => {

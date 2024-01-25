@@ -10,8 +10,8 @@ import { useSession } from "next-auth/react";
 import Modal from "@/components/Modal";
 
 
-// ProductRating component
-export default function ProductRating({ product }) {
+  // ProductRating component
+  export default function ProductRating({ product }) {
   // State hooks for product data
   const {
     showRatingModal,
@@ -56,9 +56,24 @@ export default function ProductRating({ product }) {
 
   // Component return
   return (
-    <div>
-      <Stars rating={averageRating} />
-      <small className="text-muted"> ({productRatings?.length})</small>
-    </div>
+      <div className="d-flex justify-content-between card-footer">
+        <div>
+          <Stars rating={averageRating} />
+          <small className="text-muted"> ({productRatings?.length})</small>
+        </div>
+        <small onClick={() => setShowRatingModal(true)} className="pointer">
+          {alreadyRated ? "Update your rating" : "Leave a rating"}
+        </small>
+        {showRatingModal && (
+        <Modal>
+          Rating modal
+        </Modal>
+        )}
+
+      </div>
+      
+
+
+
   );
 }
