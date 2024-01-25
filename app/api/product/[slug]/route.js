@@ -9,6 +9,12 @@ export async function GET(req, context) {
     const product = await Product.findOne({ slug: context.params.slug })
       .populate('category', 'name slug')
       .populate('tags', 'name slug')
+      .populate({
+        path: "ratings.postedBy",
+        model: "User",
+        select: "name",
+      });
+      
     return NextResponse.json(product); 
   } catch (err) { 
     console.log(err); 
