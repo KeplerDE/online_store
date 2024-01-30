@@ -34,6 +34,8 @@ import { FaStar, FaRegStar } from "react-icons/fa";
   const alreadyRated = productRatings?.find(
     (rate) => rate?.postedBy?._id === data?.user?._id
     ); 
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (alreadyRated) {
@@ -52,9 +54,42 @@ import { FaStar, FaRegStar } from "react-icons/fa";
     }
     }, [product?.ratings]);
   
-  const submitRating = async () => {
-    //
+    const submitRating = async () => {
+      if (status !== "authenticated") {
+        toast.error("You must be logged in to leave a rating");
+        router.push(`/login?callbackUrl=${pathname}`);
+        return;
+      }
+    
+    try {
+      const payload = {
+        productId: product?._id,
+        rating: currentRating,
+        comment,
+      };
+  
+      const requestOptions = {
+        method: "POST",
+        body: JSON.stringify(payload),
+      };
+  
+      const response = await fetch(`${process.env.API}/user/product/rating`, requestOptions);
+  
+      if (!response.ok) {
+        throw new Error("Failed to leave a rating");
+      }
+  
+      const data = await response.json();
+      setProductRatings(data?.ratings);
+      setShowRatingModal(false);
+      toast.success("Thanks for leaving a rating");
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error leaving a rating");
+    }
   };
+    
 
 
   // Component return
