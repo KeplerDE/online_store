@@ -94,31 +94,40 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 
   // Component return
   return (
-      <div className="d-flex justify-content-between card-footer">
-        <div>
-          <Stars rating={averageRating} />
-          <small className="text-muted"> ({productRatings?.length})</small>
-        </div>
-        <small onClick={() => setShowRatingModal(true)} className="pointer">
+    <div className="product-rating-footer">
+      <div className="rating-info">
+        <Stars rating={averageRating} />
+        <small className="text-muted"> ({productRatings?.length || 0})</small>
+      </div>
+      <div className="rating-action">
+        <small 
+          onClick={() => setShowRatingModal(true)} 
+          className="pointer text-primary" 
+          style={{ textDecoration: 'underline' }}
+        >
           {alreadyRated ? "Update your rating" : "Leave a rating"}
         </small>
-        {showRatingModal && (
-          <Modal>
+      </div>
+
+      {showRatingModal && (
+        <Modal>
+          <div className="modal-body">
             <input
               type="text"
-              className="form-control mb-3"
+              className="form-control mb-4"
               placeholder="Write a review"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <div className="pointer">
+            <div className="stars-container mb-4">
               {[...Array(5)].map((_, index) => {
                 const ratingValue = index + 1;
                 return (
                   <span
                     key={ratingValue}
-                    className={ratingValue <= currentRating ? "star-active lead" : "lead"}
+                    className={`star ${ratingValue <= currentRating ? "star-active" : ""}`}
                     onClick={() => setCurrentRating(ratingValue)}
+                    style={{ cursor: 'pointer', fontSize: '1.5rem' }}
                   >
                     {ratingValue <= currentRating ? (
                       <FaStar className="text-danger" />
@@ -131,18 +140,13 @@ import { FaStar, FaRegStar } from "react-icons/fa";
             </div>
             <button
               onClick={submitRating}
-              className="btn btn-primary btn-raised my-3"
+              className="btn btn-primary btn-block"
             >
               Submit
             </button>
-          </Modal>
-        )}
-
-
-      </div>
-      
-
-
-
+          </div>
+        </Modal>
+      )}
+    </div>
   );
 }

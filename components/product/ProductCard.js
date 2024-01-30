@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import ProductRating from "./ProductRating";
+
 dayjs.extend(relativeTime);
 
 export default function ProductCard({ product }) {
@@ -39,8 +41,9 @@ export default function ProductCard({ product }) {
       </div>
       <div className="card-footer d-flex justify-content-between">
         <small>Brand: {brand}</small>
-        <small>🌟 Stars</small>
+        <ProductRating product={product}/>
       </div>
+
     </div>
   );
 }
