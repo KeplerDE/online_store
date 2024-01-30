@@ -8,6 +8,7 @@ import Stars from "@/components/product/Stars";
 import { calculateAverageRating } from "@/utils/helpers";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/Modal";
+import { FaStar, FaRegStar } from "react-icons/fa";
 
 
   // ProductRating component
@@ -51,7 +52,9 @@ import Modal from "@/components/Modal";
     }
     }, [product?.ratings]);
   
-
+  const submitRating = async () => {
+    //
+  };
 
 
   // Component return
@@ -65,10 +68,41 @@ import Modal from "@/components/Modal";
           {alreadyRated ? "Update your rating" : "Leave a rating"}
         </small>
         {showRatingModal && (
-        <Modal>
-          Rating modal
-        </Modal>
+          <Modal>
+            <input
+              type="text"
+              className="form-control mb-3"
+              placeholder="Write a review"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <div className="pointer">
+              {[...Array(5)].map((_, index) => {
+                const ratingValue = index + 1;
+                return (
+                  <span
+                    key={ratingValue}
+                    className={ratingValue <= currentRating ? "star-active lead" : "lead"}
+                    onClick={() => setCurrentRating(ratingValue)}
+                  >
+                    {ratingValue <= currentRating ? (
+                      <FaStar className="text-danger" />
+                    ) : (
+                      <FaRegStar />
+                    )}
+                  </span>
+                );
+              })}
+            </div>
+            <button
+              onClick={submitRating}
+              className="btn btn-primary btn-raised my-3"
+            >
+              Submit
+            </button>
+          </Modal>
         )}
+
 
       </div>
       
