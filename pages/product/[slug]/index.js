@@ -68,7 +68,7 @@ export default function ProductViewPage({ product }) {
             </div>
             <div className="card-footer d-flex justify-content-between">
               <small>Brand: {product.brand}</small>
-              <ProductRating rating={product.rating} />
+              <ProductRating product={product} />
             </div>
           </div>
         </div>
