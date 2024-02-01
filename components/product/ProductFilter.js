@@ -1,8 +1,11 @@
+"use client"; 
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { priceRanges } from "../../utils/filterData";
 import Link from "next/link";
 
 export default function ProductFilter({ searchParams }) {
+  const router = useRouter();
   const [activeRange, setActiveRange] = useState({ minPrice: '', maxPrice: '' });
   const pathname = "/shop";
 
@@ -11,12 +14,29 @@ export default function ProductFilter({ searchParams }) {
 
   const handleButtonClick = (min, max) => {
     setActiveRange({ minPrice: min, maxPrice: max });
-    // Здесь может быть код для обновления searchParams или перехода на новый URL
+  };
+
+  // Функция для удаления фильтра
+  const handleRemoveFilter = (filterName) => {
+    const updatedSearchParams = { ...searchParams };
+    delete updatedSearchParams[filterName];
+    updatedSearchParams.page = 1;
+    const queryString = new URLSearchParams(updatedSearchParams).toString();
+    const newUrl = `${pathname}?${queryString}`;
+    router.push(newUrl);
   };
 
   return (
     <div>
       <p className="lead">Filter Products</p>
+      
+      <div
+        className='text-danger'
+        onClick={() => handleRemoveFilter(['minPrice', 'maxPrice'])}
+        style={{ cursor: 'pointer' }}
+      >
+        Clear Filters
+      </div>
 
       <p className="text-primary mt-4 alert alert-secondary">Price</p>
       <div className="row d-flex align-items-center mx-1">
