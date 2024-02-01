@@ -1,8 +1,8 @@
-"use client"; 
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { priceRanges } from "../../utils/filterData";
 import Link from "next/link";
+import Stars from "@/components/product/Stars"; // Проверьте правильность пути импорта
 
 export default function ProductFilter({ searchParams }) {
   const router = useRouter();
@@ -16,10 +16,18 @@ export default function ProductFilter({ searchParams }) {
     setActiveRange({ minPrice: min, maxPrice: max });
   };
 
-  // Функция для удаления фильтра
+  // Обновлённая функция для удаления фильтра
   const handleRemoveFilter = (filterName) => {
     const updatedSearchParams = { ...searchParams };
-    delete updatedSearchParams[filterName];
+    
+    if (typeof filterName === "string") {
+      delete updatedSearchParams[filterName];
+    } else if (Array.isArray(filterName)) {
+      filterName.forEach((name) => {
+        delete updatedSearchParams[name];
+      });
+    }
+
     updatedSearchParams.page = 1;
     const queryString = new URLSearchParams(updatedSearchParams).toString();
     const newUrl = `${pathname}?${queryString}`;
@@ -65,6 +73,40 @@ export default function ProductFilter({ searchParams }) {
           );
         })}
       </div>
+
+      {/* Блок для рейтинга */}
+      <p className="text-primary mt-4 alert alert-secondary">Ratings</p>
+      <div className="row d-flex align-items-center mx-1">
+        {[5, 4, 3, 2, 1].map((ratingValue) => {
+          const isActive = searchParams && String(searchParams.ratings) === String(ratingValue);
+          const url = {
+            pathname,
+            query: {
+              ...searchParams,
+              ratings: ratingValue,
+              page: 1,
+            },
+          };
+          return (
+            <div key={ratingValue}>
+              <Link href={url}>
+                <span className={isActive ? activeButton : button}>
+                  <Stars rating={ratingValue} />
+                </span>
+              </Link>
+              {isActive && (
+                <span
+                  onClick={() => handleRemoveFilter("ratings")}
+                  className="pointer"
+                >
+                  X
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       <pre>{JSON.stringify(searchParams, null, 4)}</pre>
     </div>
   );
