@@ -1,34 +1,45 @@
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { priceRanges } from "../../utils/filterData";
+"use client";
+
+import { priceRanges } from "../../utils/filterData"
 import Link from "next/link";
-import Stars from "@/components/product/Stars"; // Проверьте правильность пути импорта
+import { useRouter } from "next/navigation";
+import Stars from "../../components/product/Stars";
 
 export default function ProductFilter({ searchParams }) {
-  const router = useRouter();
-  const [activeRange, setActiveRange] = useState({ minPrice: '', maxPrice: '' });
   const pathname = "/shop";
+  const {
+    minPrice = null,
+    maxPrice = null,
+    ratings = null,
+    category = null,
+    tag = null,
+    brand = null
+  } = searchParams || {};
 
-  const activeButton = "btn btn-secondary btn-raised mx-1 border-2";
-  const button = "btn btn-secondary mx-1 border-2";
+  const router = useRouter();
 
-  const handleButtonClick = (min, max) => {
-    setActiveRange({ minPrice: min, maxPrice: max });
-  };
+  const activeButton = "btn btn-primary btn-raised mx-1 rounded-pill";
+  const button = "btn btn-secondary btn-raised mx-1 rounded-pill";
 
-  // Обновлённая функция для удаления фильтра
   const handleRemoveFilter = (filterName) => {
     const updatedSearchParams = { ...searchParams };
-    
+    // delete updatedSearchParams[filterName];
+
+    // if filterName is string
     if (typeof filterName === "string") {
       delete updatedSearchParams[filterName];
-    } else if (Array.isArray(filterName)) {
-      filterName.forEach((name) => {
+    }
+
+    // if filterName is array
+    if (Array.isArray(filterName)) {
+      filterName?.forEach((name) => {
         delete updatedSearchParams[name];
       });
     }
 
+    // reset page to 1 when applying new filtering options
     updatedSearchParams.page = 1;
+
     const queryString = new URLSearchParams(updatedSearchParams).toString();
     const newUrl = `${pathname}?${queryString}`;
     router.push(newUrl);
@@ -37,20 +48,12 @@ export default function ProductFilter({ searchParams }) {
   return (
     <div>
       <p className="lead">Filter Products</p>
-      
-      <div
-        className='text-danger'
-        onClick={() => handleRemoveFilter(['minPrice', 'maxPrice'])}
-        style={{ cursor: 'pointer' }}
-      >
+      <Link className="text-danger" href="/shop">
         Clear Filters
-      </div>
-
-      <p className="text-primary mt-4 alert alert-secondary">Price</p>
+      </Link>
+      <p className="mt-4 alert alert-primary">Price</p>
       <div className="row d-flex align-items-center mx-1">
-        {priceRanges?.map((range) => {
-          const isActive =
-            activeRange.minPrice === range?.min && activeRange.maxPrice === range?.max;
+        {priceRanges.map((range) => {
           const url = {
             pathname,
             query: {
@@ -61,24 +64,30 @@ export default function ProductFilter({ searchParams }) {
             },
           };
 
+          const isActive =
+            minPrice === String(range?.min) && maxPrice === String(range?.max);
+
           return (
-            <Link href={url} key={range.label}>
-              <span
-                className={isActive ? activeButton : button}
-                onClick={() => handleButtonClick(range?.min, range?.max)}
-              >
+            <div key={range?.label}>
+              <Link href={url} className={isActive ? activeButton : button}>
                 {range?.label}
-              </span>
-            </Link>
+              </Link>
+              {isActive && (
+                <span
+                  onClick={() => handleRemoveFilter(["minPrice", "maxPrice"])}
+                  className="pointer"
+                >
+                  X
+                </span>
+              )}
+            </div>
           );
         })}
       </div>
-
-      {/* Блок для рейтинга */}
-      <p className="text-primary mt-4 alert alert-secondary">Ratings</p>
+      <p className="mt-4 alert alert-primary">Ratings</p>
       <div className="row d-flex align-items-center mx-1">
         {[5, 4, 3, 2, 1].map((ratingValue) => {
-          const isActive = searchParams && String(searchParams.ratings) === String(ratingValue);
+          const isActive = String(ratings) === String(ratingValue);
           const url = {
             pathname,
             query: {
@@ -87,12 +96,14 @@ export default function ProductFilter({ searchParams }) {
               page: 1,
             },
           };
+
           return (
             <div key={ratingValue}>
-              <Link href={url}>
-                <span className={isActive ? activeButton : button}>
-                  <Stars rating={ratingValue} />
-                </span>
+              <Link
+                href={url}
+                className={isActive ? "btn btn-primary btn-raised mx-1 rounded-pill" : "btn btn-raised mx-1 rounded-pill"}
+              >
+                <Stars rating={ratingValue} />
               </Link>
               {isActive && (
                 <span
@@ -106,8 +117,6 @@ export default function ProductFilter({ searchParams }) {
           );
         })}
       </div>
-
-      <pre>{JSON.stringify(searchParams, null, 4)}</pre>
     </div>
   );
 }
