@@ -73,7 +73,25 @@ export const CategoryProvider = ({ children }) => {
     }
   };
   
-
+  const fetchCategoriesPublic = async () => {
+    try {
+      const apiUrl = `${process.env.API}/categories`;
+  
+      const response = await fetch(apiUrl);
+  
+      if (!response.ok) {
+        const responseBody = await response.text(); // Получаем текст ответа для диагностики
+        console.error(`Тело ответа: ${responseBody}`);
+        throw new Error("Network response was not ok");
+      }
+  
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error("Ошибка при получении категорий:", error);
+    }
+  };
+  
 const updateCategory = async () => {
     try {
       // Выполняем PUT-запрос к серверу для обновления категории
@@ -170,6 +188,7 @@ const deleteCategory = async () => {
         categories,
         setCategories,
         fetchCategories,
+        fetchCategoriesPublic,
         updatingCategory,
         setUpdatingCategory,
         updateCategory,

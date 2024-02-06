@@ -19,16 +19,16 @@ export default function ProductFilter({ searchParams }) {
   } = searchParams || {};
 
   // context
-  const { fetchCategories, categories } = useCategory();
+  const { fetchCategoriesPublic, categories } = useCategory();
 
   useEffect(() => {
-    fetchCategories();
+    fetchCategoriesPublic();
   }, []);
 
   const router = useRouter();
 
   const activeButton = "btn btn-primary btn-raised mx-1 rounded-pill";
-  const button = "btn btn-secondary btn-raised mx-1 rounded-pill";
+  const button = "btn  btn-raised mx-1 rounded-pill";
 
   const handleRemoveFilter = (filterName) => {
     const updatedSearchParams = { ...searchParams };
@@ -131,7 +131,7 @@ export default function ProductFilter({ searchParams }) {
       <p className="mt-4 alert alert-primary">Categories</p>
       <div className="row d-flex align-items-center mx-1 filter-scroll">
         {categories?.map((c) => {
-          const isActive = category === c._id;
+          const isActive = categories === c._id;
           const url = {
             pathname,
             query: {
