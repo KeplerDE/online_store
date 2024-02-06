@@ -3,6 +3,8 @@
 import { priceRanges } from "../../utils/filterData"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useCategory } from "@/context/category";
 import Stars from "../../components/product/Stars";
 
 export default function ProductFilter({ searchParams }) {
@@ -16,6 +18,13 @@ export default function ProductFilter({ searchParams }) {
     brand = null
   } = searchParams || {};
 
+  // context
+  const { fetchCategories, categories } = useCategory();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const router = useRouter();
 
   const activeButton = "btn btn-primary btn-raised mx-1 rounded-pill";
@@ -23,7 +32,7 @@ export default function ProductFilter({ searchParams }) {
 
   const handleRemoveFilter = (filterName) => {
     const updatedSearchParams = { ...searchParams };
-    // delete updatedSearchParams[filterName];
+   
 
     // if filterName is string
     if (typeof filterName === "string") {
@@ -84,6 +93,7 @@ export default function ProductFilter({ searchParams }) {
           );
         })}
       </div>
+
       <p className="mt-4 alert alert-primary">Ratings</p>
       <div className="row d-flex align-items-center mx-1">
         {[5, 4, 3, 2, 1].map((ratingValue) => {
@@ -117,6 +127,37 @@ export default function ProductFilter({ searchParams }) {
           );
         })}
       </div>
+
+      <p className="mt-4 alert alert-primary">Categories</p>
+      <div className="row d-flex align-items-center mx-1 filter-scroll">
+        {categories?.map((c) => {
+          const isActive = category === c._id;
+          const url = {
+            pathname,
+            query: {
+              ...searchParams,
+              category: c?._id,
+              page: 1,
+            },
+          };
+          return (
+            <div key={c._id}>
+              <Link href={url} className={isActive ? activeButton : button}>
+                {c?.name}
+              </Link>
+              {isActive && (
+                <span
+                  onClick={() => handleRemoveFilter("category")}
+                  className="pointer"
+                >
+                  X
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }
