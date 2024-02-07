@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCategory } from "@/context/category";
 import Stars from "../../components/product/Stars";
+import { useTag } from "@/context/tag";
 
 export default function ProductFilter({ searchParams }) {
   const pathname = "/shop";
@@ -20,9 +21,11 @@ export default function ProductFilter({ searchParams }) {
 
   // context
   const { fetchCategoriesPublic, categories } = useCategory();
+  const { fetchTagsPublic, tags } = useTag();
 
   useEffect(() => {
     fetchCategoriesPublic();
+    fetchTagsPublic();
   }, []);
 
   const router = useRouter();
@@ -157,6 +160,44 @@ export default function ProductFilter({ searchParams }) {
           );
         })}
       </div>
+
+      
+      {category && (
+      <>
+        <p className="mt-4 alert alert-primary">Tags</p>
+        <div className="row d-flex align-items-center mx-1 filter-scroll">
+          {tags
+            ?.filter((t) => t?.parentCategory?._id === category)
+            ?.map((t) => {
+              const isActive = tag === t._id;
+              const url = {
+                pathname,
+                query: {
+                  ...searchParams,
+                  tag: t._id,
+                  page: 1,
+                },
+              };
+              return (
+                <div key={t._id}>
+                  <Link href={url} className={isActive ? 'activeButton' : 'button'}>
+                    {t.name}
+                  </Link>
+                  {isActive && (
+                    <span onClick={() => handleRemoveFilter("tag")} className="pointer">
+                      X
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      </>
+    )}
+
+
+      {/* <pre>{JSON.stringify(tags, null, 4)}</pre> */}
+
 
     </div>
   );

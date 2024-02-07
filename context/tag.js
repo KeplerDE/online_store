@@ -67,7 +67,30 @@ export const TagProvider = ({ children }) => {
       toast.error("An error occurred while fetching tags"); // Здесь можно использовать error.message для более точного сообщения об ошибке.
     }
   };
-  
+
+    // Функция для получения списка тегов
+    const fetchTagsPublic = async () => {
+      try {
+        const response = await fetch(`${process.env.API}/tags`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },  
+        });
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+          toast.error(data); // Используем полученные данные для отображения ошибки.
+          throw new Error(data); // Создаем ошибку с полученным сообщением.
+        }
+    
+        setTags(data);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+        toast.error("An error occurred while fetching tags"); // Здесь можно использовать error.message для более точного сообщения об ошибке.
+      }
+    };
 
   // Функция для обновления тега
   const updateTag = async () => {
@@ -131,6 +154,7 @@ export const TagProvider = ({ children }) => {
         setTags,
         createTag,
         fetchTags,
+        fetchTagsPublic,
         updatingTag,
         setUpdatingTag,
         updateTag,
