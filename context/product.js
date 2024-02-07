@@ -27,7 +27,10 @@ export const ProductProvider = ({ children }) => {
   const [isRatingModalVisible, setIsRatingModalVisible] = useState(false);
   const [ratingValue, setRatingValue] = useState(0);
   const [userComment, setUserComment] = useState("");
-
+  // brands
+  const [ brands, setBrands ] = useState([])   
+  
+  
   // Функция для открытия модального окна просмотра изображений и оценок
   const handleOpenImagePreview = (imageUrl) => {
     setCurrentImagePreviewUrl(imageUrl);
@@ -209,6 +212,24 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const fetchBrands = async () => {
+    try {
+      const response = await fetch(`${process.env.API}/product/brands`, {
+        method: "GET",
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        toast.error(data?.err);
+      } else {
+        setBrands(data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
   const updateProduct = async () => {
     try {
       const response = await fetch(
@@ -286,6 +307,8 @@ export const ProductProvider = ({ children }) => {
         setCurrentRating,
         comment,
         setComment,
+        fetchBrands,
+        brands
       }}
     >
       {children}

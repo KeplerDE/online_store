@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useCategory } from "@/context/category";
 import Stars from "../../components/product/Stars";
 import { useTag } from "@/context/tag";
+import { useProduct } from "@/context/product";
 
 export default function ProductFilter({ searchParams }) {
   const pathname = "/shop";
@@ -22,10 +23,13 @@ export default function ProductFilter({ searchParams }) {
   // context
   const { fetchCategoriesPublic, categories } = useCategory();
   const { fetchTagsPublic, tags } = useTag();
+  const { fetchBrands, brands } = useProduct();
+
 
   useEffect(() => {
     fetchCategoriesPublic();
     fetchTagsPublic();
+    fetchBrands();
   }, []);
 
   const router = useRouter();
@@ -195,7 +199,36 @@ export default function ProductFilter({ searchParams }) {
       </>
     )}
 
-
+    <p className="mt-4 alert alert-primary">Brands</p>
+    <div className="row d-flex align-items-center mx-1 filter-scroll">
+      {brands?.map((b) => {
+        const isActive = brand === b;
+        const url = {
+          pathname,
+          query: {
+            ...searchParams,
+            brand: b,
+            page: 1,
+          },
+        };
+        return (
+          <div key={b}>
+            <Link href={url} className={isActive ? activeButton : button}>
+              {b}
+            </Link>
+            {isActive && (
+              <span
+                onClick={() => handleRemoveFilter("brand")}
+                className="pointer"
+              >
+                X
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+        
       {/* <pre>{JSON.stringify(tags, null, 4)}</pre> */}
 
 

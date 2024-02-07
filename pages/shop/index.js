@@ -11,7 +11,7 @@ async function getProducts(searchParams) {
     tag: searchParams.tag || "",
     brand: searchParams.brand || "",
   }).toString();
-  // Add your fetching logic here
+ 
 }
 
 export default function Shop({ searchParams }) {
@@ -21,14 +21,14 @@ export default function Shop({ searchParams }) {
     async function fetchData() {
       try {
         const result = await getProducts(searchParams);
-        setProducts(result); // Assuming the result is an array of products
+        setProducts(result); 
       } catch (error) {
         console.error(error);
       }
     }
 
     fetchData();
-  }, [searchParams]); // Re-run when searchParams changes
+  }, [searchParams]); 
 
   return (
     <div className="container-fluid">
