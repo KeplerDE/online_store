@@ -1,45 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import ProductFilter from "@/components/product/ProductFilter";
 
-async function getProducts(searchParams) {
-  const searchQuery = new URLSearchParams({
-    page: searchParams.page || 1,
-    minPrice: searchParams.minPrice || "",
-    maxPrice: searchParams.maxPrice || "",
-    ratings: searchParams.ratings || "",
-    category: searchParams.category || "",
-    tag: searchParams.tag || "",
-    brand: searchParams.brand || "",
-  }).toString();
- 
+// Функция для обновления параметров фильтра в URL
+function updateQueryParams(router, newParams) {
+  const currentQuery = router.query;
+  const updatedQuery = { ...currentQuery, ...newParams };
+  router.push({
+    pathname: router.pathname,
+    query: updatedQuery,
+  }, undefined, { scroll: false }); // Второй параметр - asPath (не изменяется), третий - опции
 }
 
-export default function Shop({ searchParams }) {
+export default function Shop() {
   const [products, setProducts] = useState([]);
+  const router = useRouter(); // Использование useRouter для доступа к маршруту и параметрам запроса
 
   useEffect(() => {
-    async function fetchData() {
+    // Функция для получения продуктов по параметрам поиска из URL
+    async function fetchProducts() {
+      const searchParams = new URLSearchParams(router.query).toString();
       try {
-        const result = await getProducts(searchParams);
-        setProducts(result); 
+        // Здесь должен быть ваш API-запрос, например, используя fetch
+        const response = await fetch(`/api/products?${searchParams}`);
+        const data = await response.json();
+        setProducts(data); // Обновление состояния продуктов
       } catch (error) {
-        console.error(error);
+        console.error('Failed to fetch products:', error);
       }
     }
 
-    fetchData();
-  }, [searchParams]); 
+    fetchProducts();
+  }, [router.query]); // Зависимость от query параметров URL
+
+  // Обработчик фильтра, который вызывается при изменении фильтров в компоненте ProductFilter
+  const handleFilterChange = (filterName, value) => {
+    const newParams = { ...router.query, [filterName]: value, page: 1 }; // Сброс страницы на первую при изменении фильтров
+    updateQueryParams(router, newParams);
+  };
 
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-lg-3">
-          <ProductFilter searchParams={searchParams} />
+          <ProductFilter
+            searchParams={router.query}
+            onFilterChange={handleFilterChange}
+          />
         </div>
         <div className="col-lg-9">
-          {/* Render the products list */}
           {products.map((product) => (
-            <div key={product.id}>{/* Render product here */}</div>
+            <div key={product.id}>{}</div>
           ))}
         </div>
       </div>

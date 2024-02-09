@@ -11,14 +11,8 @@ import { useProduct } from "@/context/product";
 
 export default function ProductFilter({ searchParams }) {
   const pathname = "/shop";
-  const {
-    minPrice = null,
-    maxPrice = null,
-    ratings = null,
-    category = null,
-    tag = null,
-    brand = null
-  } = searchParams || {};
+  const { minPrice, maxPrice, ratings, category, tag, brand } = searchParams;
+
 
   // context
   const { fetchCategoriesPublic, categories } = useCategory();
