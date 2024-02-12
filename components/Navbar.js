@@ -8,10 +8,14 @@ const Navbar = () => {
 
   return (
     <nav className="nav shadow p-2 justify-content-between mb-3">
-      <Link href="/">
-        <span className="navbar-brand">My Ecommerce Site 🎄</span>
-      </Link>
-
+      <div className="d-flex flex-grow-1">
+        <Link href="/">
+          <span className="navbar-brand">My Ecommerce Site 🎄</span>
+        </Link>
+        <Link href="/shop">
+          <span className="navbar-brand">Shop</span>
+        </Link>
+      </div>
       {status === "authenticated" ? (
         <div className="d-flex">
           <Link href={`/dashboard/${data?.user?.role === "admin" ? "admin" : "user"}`}>

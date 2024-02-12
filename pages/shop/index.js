@@ -1,57 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ProductFilter from "@/components/product/ProductFilter";
+import Pagination from "@/components/product/Pagination";
+import ProductCard from '@/components/product/ProductCard';
 
-// Функция для обновления параметров фильтра в URL
-function updateQueryParams(router, newParams) {
-  const currentQuery = router.query;
-  const updatedQuery = { ...currentQuery, ...newParams };
-  router.push({
-    pathname: router.pathname,
-    query: updatedQuery,
-  }, undefined, { scroll: false }); // Второй параметр - asPath (не изменяется), третий - опции
+async function getProducts(searchParams) {
+  // Создаем строку запроса с параметрами для API
+  const searchQuery = new URLSearchParams(searchParams).toString();
+
+  try {
+    // Отправляем запрос к API
+    const response = await fetch(`${process.env.API}/product?${searchQuery}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!data || typeof data !== 'object' || !Array.isArray(data.products)) {
+      throw new Error("No products returned");
+    }
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    return { products: [], currentPage: 1, totalPages: 1 };
+  }
 }
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
-  const router = useRouter(); // Использование useRouter для доступа к маршруту и параметрам запроса
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const router = useRouter();
 
+  // useEffect для загрузки продуктов при изменении параметров запроса
   useEffect(() => {
-    // Функция для получения продуктов по параметрам поиска из URL
     async function fetchProducts() {
-      const searchParams = new URLSearchParams(router.query).toString();
-      try {
-        // Здесь должен быть ваш API-запрос, например, используя fetch
-        const response = await fetch(`/api/products?${searchParams}`);
-        const data = await response.json();
-        setProducts(data); // Обновление состояния продуктов
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
+      const data = await getProducts(router.query);
+      setProducts(data.products);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
     }
 
-    fetchProducts();
-  }, [router.query]); // Зависимость от query параметров URL
-
-  // Обработчик фильтра, который вызывается при изменении фильтров в компоненте ProductFilter
-  const handleFilterChange = (filterName, value) => {
-    const newParams = { ...router.query, [filterName]: value, page: 1 }; // Сброс страницы на первую при изменении фильтров
-    updateQueryParams(router, newParams);
-  };
+    if (router.isReady) {
+      fetchProducts();
+    }
+  }, [router.isReady, router.query]);
 
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-lg-3">
-          <ProductFilter
-            searchParams={router.query}
-            onFilterChange={handleFilterChange}
-          />
+        <div className="col-lg-3 overflow-auto" style={{ maxHeight: "90vh" }}>
+          <ProductFilter searchParams={router.query} />
         </div>
-        <div className="col-lg-9">
-          {products.map((product) => (
-            <div key={product.id}>{}</div>
-          ))}
+        <div className="col-lg-9 overflow-auto" style={{ maxHeight: "90vh" }}>
+          {/* Здесь можно отобразить продукты, возможно в виде карточек или списка */}
+          <div className="row">
+            {products?.map((product) => (
+              <div key={product.id} className="col-lg-4">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+          <br />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            searchParams={router.query}
+            pathname="/shop"
+          />
         </div>
       </div>
     </div>
