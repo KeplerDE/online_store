@@ -1,75 +1,73 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/utils/dbConnect'; // Утилита для подключения к базе данных
-import Product from '@/models/product'; // Модель продукта
-import { parseUrl } from 'query-string'; // Функция для парсинга URL
+// Импорт необходимых зависимостей
+import { NextResponse } from "next/server";
+import dbConnect from "@/utils/dbConnect"; // Утилита для подключения к БД
+import Product from "@/models/product"; // Модель продукта
+import queryString from "query-string"; // Для парсинга строки запроса
 
-// Асинхронная функция для обработки GET-запросов
-export async function handleGetRequest(req) {
-  // Подключение к базе данных
-  await dbConnect();
+export async function GET(req) {
+  await dbConnect(); // Подключение к базе данных
 
-  // Извлечение и парсинг параметров запроса из URL
-  const { query: { page, category, brand, tag, ratings, minPrice, maxPrice } = {} } = parseUrl(req.url);
+  // Анализ URL запроса для получения параметров
+  const searchParams = queryString.parseUrl(req.url).query;
+  // Деструктуризация параметров запроса
+  const { page, category, brand, tag, ratings, minPrice, maxPrice } = searchParams || {};
+  const pageSize = 6; // Размер страницы для пагинации
 
-  // Установка размера страницы по умолчанию и инициализация критериев фильтрации
-  const pageSize = 6;
-  const filterCriteria = {};
-
-  // Заполнение критериев фильтрации на основе предоставленных параметров запроса
-  if (category) filterCriteria.category = category;
-  if (brand) filterCriteria.brand = brand;
-  if (tag) filterCriteria.tags = tag;
-  if (minPrice && maxPrice) {
-    filterCriteria.price = { $gte: minPrice, $lte: maxPrice };
-  }
-
+  // Инициализация объекта фильтра
+  const filter = {};
+  // Применение фильтров на основе параметров запроса
+  if (category) filter.category = category;
+  if (brand) filter.brand = brand;
+  if (tag) filter.tags = tag;
+  if (minPrice && maxPrice) filter.price = { $gte: minPrice, $lte: maxPrice };
+  
   try {
-    // Расчет значений для пагинации
+    // Определение текущей страницы и расчет пропускаемых продуктов для пагинации
     const currentPage = Number(page) || 1;
-    const skipAmount = (currentPage - 1) * pageSize;
+    const skip = (currentPage - 1) * pageSize;
 
-    // Получение всех продуктов, соответствующих заданным фильтрам
-    const allProducts = await Product.find(filterCriteria)
-      .populate('category', 'name') // Добавление информации о категории
-      .populate('tags', 'name') // Добавление информации о тегах
-      .sort({ createdAt: -1 }); // Сортировка по дате создания
-
-    // Функция для расчета среднего рейтинга каждого продукта
+    // Получение продуктов с учетом фильтров, сортировка по дате создания
+    const allProducts = await Product.find(filter)
+      .populate("category", "name")
+      .populate("tags", "name")
+      .sort({ createdAt: -1 });
+    
+    // Функция для расчета среднего рейтинга продукта
     const calculateAverageRating = (ratings) => {
       if (ratings.length === 0) return 0;
-      let totalRating = ratings.reduce((acc, { rating }) => acc + rating, 0);
+      let totalRating = 0;
+      ratings.forEach((rating) => { totalRating += rating.rating; });
       return totalRating / ratings.length;
     };
-
+    
     // Расчет среднего рейтинга для каждого продукта
     const productsWithAverageRating = allProducts.map((product) => ({
       ...product.toObject(),
       averageRating: calculateAverageRating(product.ratings),
     }));
-
-    // Фильтрация продуктов на основе параметра рейтинга
+    
+    // Дополнительная фильтрация продуктов по рейтингу
     const filteredProducts = productsWithAverageRating.filter((product) => {
-      if (!ratings) return true; // Фильтр по рейтингу не применен
+      if (!ratings) return true;
       const targetRating = Number(ratings);
-      const ratingDifference = product.averageRating - targetRating;
-      return ratingDifference >= -0.5 && ratingDifference <= 0.5; // Диапазон [3.5 до 4.5] для целевого рейтинга 4
+      const difference = product.averageRating - targetRating;
+      return difference >= -0.5 && difference <= 0.5; // Разница в рейтинге
     });
-
-    // Определение общего количества отфильтрованных продуктов
+    
+    // Вычисление общего количества отфильтрованных продуктов
     const totalFilteredProducts = filteredProducts.length;
-
     // Применение пагинации к отфильтрованным продуктам
-    const paginatedProducts = filteredProducts.slice(skipAmount, skipAmount + pageSize);
-
-    // Возвращение данных о продуктах с пагинацией в формате JSON
+    const paginatedProducts = filteredProducts.slice(skip, skip + pageSize);
+    
+    // Возвращение JSON-ответа с данными о продуктах, текущей странице и общем количестве страниц
     return NextResponse.json({
       products: paginatedProducts,
       currentPage,
       totalPages: Math.ceil(totalFilteredProducts / pageSize),
     }, { status: 200 });
   } catch (err) {
-    // Обработка ошибок и возвращение ответа с ошибкой
-    console.error('Ошибка фильтрации продуктов =>', err);
+    // Логирование и возвращение ошибки, если она возникла
+    console.log("filter products err => ", err);
     return NextResponse.json({ err: err.message }, { status: 500 });
   }
 }

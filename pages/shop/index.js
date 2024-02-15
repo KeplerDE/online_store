@@ -7,27 +7,31 @@ import ProductCard from '@/components/product/ProductCard';
 async function getProducts(searchParams) {
   // Создаем строку запроса с параметрами для API
   const searchQuery = new URLSearchParams(searchParams).toString();
+  console.log('Search Query:', searchQuery); // Правильное место для логирования строки запроса
 
   try {
+    const apiUrl = `${process.env.API}/product/filters?${searchQuery}`;
+    console.log('API URL:', apiUrl); // Логируем URL до отправки запроса
+
     // Отправляем запрос к API
-    const response = await fetch(`${process.env.API}/product?${searchQuery}`, {
+    const response = await fetch(apiUrl, {
       method: "GET",
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch products");
+      throw new Error(`Failed to fetch products: ${response.status}`); // Логируем статус ответа при ошибке
     }
 
     const data = await response.json();
-    console.log(data);
+    console.log('Data received:', data); // Правильное место для логирования полученных данных
 
     if (!data || typeof data !== 'object' || !Array.isArray(data.products)) {
-      throw new Error("No products returned");
+      throw new Error("Invalid data format or no products returned");
     }
 
     return data;
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching products:', err); // Правильное место для логирования ошибки
     return { products: [], currentPage: 1, totalPages: 1 };
   }
 }
@@ -41,6 +45,7 @@ export default function Shop() {
   // useEffect для загрузки продуктов при изменении параметров запроса
   useEffect(() => {
     async function fetchProducts() {
+      console.log('Fetching products with query:', router.query); // Лог перед вызовом запроса
       const data = await getProducts(router.query);
       setProducts(data.products);
       setCurrentPage(data.currentPage);
