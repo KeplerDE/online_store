@@ -1,11 +1,18 @@
 // components/Navbar.js
 import Link from 'next/link';
 import { useSession, signOut } from "next-auth/react";
+import { useProduct } from '@/context/product';
 
 
 const Navbar = () => {
   const { data, status } = useSession();
 
+  const {
+    productSearchQuery,
+    setProductSearchQuery,
+    fetchProductSearchResults,
+  } = useProduct();
+  
   return (
     <nav className="nav shadow p-2 justify-content-between mb-3">
       <div className="d-flex flex-grow-1">
@@ -16,6 +23,21 @@ const Navbar = () => {
           <span className="navbar-brand">Shop</span>
         </Link>
       </div>
+
+      <form className="d-flex mx-2" role="search" onSubmit={fetchProductSearchResults}>
+        <input
+          className="form-control"
+          type="search"
+          placeholder="Search products"
+          aria-label="Search"
+          onChange={(e) => setProductSearchQuery(e.target.value)}
+          value={productSearchQuery}
+        />
+        <button className="btn" type="submit" style={{ borderRadius: "20px" }}>
+          🔍
+        </button>
+      </form>
+
       {status === "authenticated" ? (
         <div className="d-flex">
           <Link href={`/dashboard/${data?.user?.role === "admin" ? "admin" : "user"}`}>

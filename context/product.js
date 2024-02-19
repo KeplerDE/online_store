@@ -285,6 +285,7 @@ export const ProductProvider = ({ children }) => {
 
 
   const fetchProductSearchResults = async () => {
+    e.preventDefault();
     try {
       const response = await fetch(
         `${process.env.API}/search/products?${productSearchQuery}`,
@@ -299,7 +300,7 @@ export const ProductProvider = ({ children }) => {
   
       const data = await response.json();
       setProductSearchResults(data);
-      router.push(`/search/products?productSearchQuery${productSearchQuery}`);
+      router.push(`/search/products?productSearchQuery=${productSearchQuery}`);
     } catch (err) {
       console.log(err);
     }
