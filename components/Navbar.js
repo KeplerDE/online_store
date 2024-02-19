@@ -24,7 +24,9 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <form className="d-flex mx-2" role="search" onSubmit={fetchProductSearchResults}>
+      <form className="d-flex mx-2" 
+      role="search" 
+      onSubmit={fetchProductSearchResults}>
         <input
           className="form-control"
           type="search"

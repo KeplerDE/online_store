@@ -284,25 +284,35 @@ export const ProductProvider = ({ children }) => {
 
 
 
-  const fetchProductSearchResults = async () => {
+  const fetchProductSearchResults = async (e) => {
     e.preventDefault();
+    console.log('Starting fetch for product search results...');
+  
+    // Ensure the query is properly encoded
+    const encodedQuery = encodeURIComponent(productSearchQuery);
+  
     try {
-      const response = await fetch(
-        `${process.env.API}/search/products?${productSearchQuery}`,
-        {
-          method: "GET",
-        }
-      );
+      const url = `${process.env.API}/search/products?productSearchQuery=${encodedQuery}`;
+      console.log('Sending request to:', url);
+      const response = await fetch(url, {
+        method: "GET",
+      });
+  
+      console.log('Response received:', response);
   
       if (!response.ok) {
+        console.log('Response not OK:', response.status);
         throw new Error("Network response was not ok for search results");
       }
   
       const data = await response.json();
+      console.log('Data received:', data);
       setProductSearchResults(data);
-      router.push(`/search/products?productSearchQuery=${productSearchQuery}`);
+      
+      // Here, also ensure the query is properly encoded in the URL
+      router.push(`/search/products?productSearchQuery=${encodedQuery}`);
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching search results:', err);
     }
   };
   

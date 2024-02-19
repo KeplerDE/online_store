@@ -1,49 +1,52 @@
+// api/search/products/route
 import { NextResponse } from "next/server";
-import dbConnect from "@/utils/dbConnect"; 
+import dbConnect from "@/utils/dbConnect";
 import Product from "@/models/product";
-import Category from "@/models/category"; 
-import Tag from "@/models/tag"; 
-import queryString from "query-string"; 
+import Category from "@/models/category";
+import Tag from "@/models/tag";
+import queryString from "query-string";
 
-
-// Экспортируем асинхронную функцию для обработки GET запросов
 export async function GET(req) {
-  await dbConnect(); // Подключаемся к базе данных
-
-  // Извлекаем поисковый запрос продукта из URL запроса
-  const { productSearchQuery } = queryString.parseUrl(req.url).query;
-  
   try {
-    // Поиск категорий и тегов по запросу productSearchQuery
+    await dbConnect();
+    const { productSearchQuery } = queryString.parseUrl(req.url).query;
+
+    // Ensure productSearchQuery is a string before proceeding
+    if (typeof productSearchQuery !== 'string') {
+      return new NextResponse(
+        JSON.stringify({ err: "Query must be a string." }),
+        { status: 400 }
+      );
+    }
+
+    // Search for categories and tags based on the productSearchQuery
     const [categories, tags] = await Promise.all([
-      Category.find({ name: { $regex: productSearchQuery, $options: "i" } }), // Поиск категорий
-      Tag.find({ name: { $regex: productSearchQuery, $options: "i" } }), // Поиск тегов
+      Category.find({ name: new RegExp(productSearchQuery, "i") }),
+      Tag.find({ name: new RegExp(productSearchQuery, "i") }),
     ]);
-    
-    // Получаем идентификаторы категорий и тегов
-    const categoryIds = categories.map((category) => category._id);
-    const tagIds = tags.map((tag) => tag._id);
-    
-    // Основной запрос поиска продуктов
+
+    const categoryIds = categories.map(category => category._id);
+    const tagIds = tags.map(tag => tag._id);
+
+    // Main product search query
     const products = await Product.find({
       $or: [
-        { title: { $regex: productSearchQuery, $options: "i" } }, // Поиск в заголовках
-        { description: { $regex: productSearchQuery, $options: "i" } }, // Поиск в описаниях
-        { brand: { $regex: productSearchQuery, $options: "i" } }, // Поиск по бренду
-        { category: { $in: categoryIds } }, // Поиск по ID категорий
-        { tags: { $in: tagIds } }, // Поиск по ID тегов
+        { title: new RegExp(productSearchQuery, "i") },
+        { description: new RegExp(productSearchQuery, "i") },
+        { brand: new RegExp(productSearchQuery, "i") },
+        { category: { $in: categoryIds } },
+        { tags: { $in: tagIds } },
       ],
     })
-    .populate("category", "name") // Добавляем названия категорий к результатам
-    .populate("tags", "name") // Добавляем названия тегов к результатам
-    .sort({ createdAt: -1 }); // Сортируем результаты по дате создания, начиная с новейших
-    
-    return NextResponse.json(products); // Возвращаем найденные продукты в формате JSON
+    .populate("category", "name")
+    .populate("tags", "name")
+    .sort({ createdAt: -1 });
+
+    return new NextResponse(JSON.stringify(products), { status: 200 });
   } catch (err) {
-    // В случае ошибки логируем её и возвращаем сообщение об ошибке
-    console.log(err);
-    return NextResponse.json(
-      { err: "Ошибка сервера. Пожалуйста, попробуйте еще раз." },
+    console.error(err);
+    return new NextResponse(
+      JSON.stringify({ err: "Server error. Please try again." }),
       { status: 500 }
     );
   }
