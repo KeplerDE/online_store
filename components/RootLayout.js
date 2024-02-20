@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './Navbar';
 import { CategoryProvider } from "@/context/category";
@@ -12,11 +11,6 @@ export default function RootLayout({ children }) {
       <CategoryProvider>
         <TagProvider>
           <ProductProvider>
-            <Head>
-              <title>Online store</title>
-              <meta name="description" content="Ecommerce Website using NextJS Fullstack" />
-              <meta charSet="utf-8" />
-            </Head>
             <Toaster /> 
             <Navbar />
             <main>{children}</main>
