@@ -4,6 +4,7 @@ import Image from "next/image";
 import ProductImage from "@/components/product/ProductImage";
 import ProductLike from "@/components/product/ProductLike";
 import ProductRating from "@/components/product/ProductRating";
+import UserReviews from "@/components/product/UserReviews";
 
 
 dayjs.extend(relativeTime);
@@ -82,6 +83,11 @@ export default function ProductViewPage({ product }) {
 
         </div>
       </div>
+        <div className="row">
+          <div className="col my-5">
+          <UserReviews reviews={product?.ratings} />
+          </div>
+        </div>
     </div>
   );
 }
