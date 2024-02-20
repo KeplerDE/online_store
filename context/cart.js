@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 export const CartContext = createContext();
 
@@ -17,19 +17,49 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   // добавить в корзину
-
+  const addToCart = (product, quantity) => {
+    const existingProduct = cartItems.find((item) => item._id === product._id);
+    if (existingProduct) {
+      const updatedCartItems = cartItems.map((item) =>
+        item._id === product._id ? { ...item, quantity: item.quantity + quantity } : item
+      );
+      setCartItems(updatedCartItems);
+    } else {
+      setCartItems([...cartItems, { ...product, quantity }]);
+    }
+  };
   // удалить из корзины
 
-  // обновить количество
 
+  const removeFromCart = (productId) => {
+    const updatedCartItems = cartItems.filter((item) => item._id !== productId);
+    setCartItems(updatedCartItems);
+    // Обновление локального хранилища
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+    }
+  };
+  // обновить количество
+  const updateQuantity = (product, quantity) => {
+    const updatedItems = cartItems.map((item) =>
+      item._id === product._id ? { ...item, quantity } : item
+    );
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+  };
   return (
     <CartContext.Provider
       value={{
         cartItems,
-
+        addToCart,
+        updateQuantity,
+        removeFromCart,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
+
+export const useCart = () => useContext(CartContext);
