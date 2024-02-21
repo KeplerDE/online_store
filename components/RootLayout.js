@@ -13,11 +13,9 @@ export default function RootLayout({ children }) {
         <TagProvider>
           <ProductProvider>
             <CartProvider>
-              <body>
                 <Toaster /> 
                 <Navbar />
                 <main>{children}</main>
-              </body>
             </CartProvider>
           </ProductProvider>
         </TagProvider>
