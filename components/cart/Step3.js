@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCart } from "@/context/cart"; 
 import toast from "react-hot-toast";
+import OrderSummary from "./OrderSummary";
 
 export default function Step3({ onPrevStep }) {
   const { cartItems } = useCart();
@@ -61,7 +62,7 @@ export default function Step3({ onPrevStep }) {
           </div>
         </div>
         <div className="col-lg-4">
-          <p> Order Summary </p>
+          < OrderSummary/>
         </div>
       </div>
     </div>

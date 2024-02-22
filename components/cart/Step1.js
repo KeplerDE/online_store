@@ -3,6 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import AddToCart from '@/components/product/AddToCart';
 import { useCart } from '@/context/cart';
+import OrderSummary from './OrderSummary';
+
+
 
 export default function Step1({ onNextStep }) {
   const { cartItems } = useCart();
@@ -54,7 +57,7 @@ export default function Step1({ onNextStep }) {
           </div>
         </div>
         <div className="col-lg-4">
-          <p> Order Summary </p>
+          < OrderSummary/>
         </div>
       </div>
     </div>

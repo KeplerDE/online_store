@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
+import OrderSummary from './OrderSummary';
 
 export default function Step2({ onNextStep, onPrevStep }) {
   const { data, status } = useSession();
@@ -68,7 +69,7 @@ export default function Step2({ onNextStep, onPrevStep }) {
           </div>
         </div>
         <div className="col-lg-4">
-          <p> Order Summary </p>
+          < OrderSummary/>
         </div>
       </div>
     </div>
