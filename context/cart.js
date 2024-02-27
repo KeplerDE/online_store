@@ -1,4 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { toast } from 'react-toastify';
+
 
 export const CartContext = createContext();
 
@@ -10,6 +12,11 @@ export const CartProvider = ({ children }) => {
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(storedCartItems);
   }, []);
+
+  // coupons
+  const [couponCode, setCouponCode] = useState("");
+  const [percentOff, setPercentOff] = useState(0);
+  const [validCoupon, setValidCoupon] = useState(false);
 
   // Сохранить элементы корзины в локальное хранилище при изменении состояния cartItems
   useEffect(() => {
@@ -47,6 +54,40 @@ export const CartProvider = ({ children }) => {
     setCartItems(updatedItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
   };
+
+
+
+  // Функция обработки купона
+  const handleCoupon = async (coupon) => {
+    try {
+      const response = await fetch(`${process.env.API}/stripe/coupon`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ couponCode: coupon }),
+      });
+
+      // Обработка неудачного ответа сервера
+      if (!response.ok) {
+        throw new Error('Invalid coupon code');
+      }
+
+      // Успешный ответ сервера
+      const data = await response.json();
+      setPercentOff(data.percent_off);
+      setValidCoupon(true);
+      toast.success(`${data.name} applied successfully, ${data.percent_off}% off`);
+    } catch (error) {
+      // Обработка ошибок запроса или неверного кода купона
+      console.error(error);
+      setPercentOff(0);
+      setValidCoupon(false);
+      toast.error(error.message || "An error occurred. Please try again.");
+    }
+  };
+
+
   return (
     <CartContext.Provider
       value={{
@@ -54,6 +95,11 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateQuantity,
         removeFromCart,
+        couponCode,
+        setCouponCode,
+        handleCoupon,
+        percentOff,
+        validCoupon
       }}
     >
       {children}
