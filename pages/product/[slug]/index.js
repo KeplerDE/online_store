@@ -5,6 +5,7 @@ import ProductImage from '@/components/product/ProductImage';
 import ProductLike from '@/components/product/ProductLike';
 import ProductRating from '@/components/product/ProductRating';
 import UserReviews from '@/components/product/UserReviews';
+import CouponCode from '@/components/product/CouponCode';
 
 dayjs.extend(relativeTime);
 
@@ -60,11 +61,13 @@ export default function ProductViewPage({ product, metadata }) {
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </Head>
+
       <div className="container mb-5">
         <div className="row">
           <div className="col-lg-8 mb-4">
             <div className="card">
               <ProductImage product={product} />
+              <CouponCode product={product} />
               <div className="card-body">
                 <h5 className="card-title">{product.title}</h5>
                 <div dangerouslySetInnerHTML={{ __html: product.description.replace(/\./g, "<br/><br/>") }} />
