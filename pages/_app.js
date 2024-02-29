@@ -5,6 +5,7 @@ import 'bootstrap-material-design/dist/css/bootstrap-material-design.min.css';
 import { SessionProvider } from 'next-auth/react';
 import Loading from '../components/Loading'; 
 import RootLayout from '../components/RootLayout'; // Импортируем RootLayout
+import { SnackbarProvider } from 'notistack';
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -29,10 +30,12 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      {loading && <Loading />} {/* Отображаем Loading, если loading === true */}
-      <RootLayout>
-        <Component {...pageProps} />
-      </RootLayout>
+      <SnackbarProvider maxSnack={3}> {/* Оборачиваем в SnackbarProvider */}
+        {loading && <Loading />}
+        <RootLayout>
+          <Component {...pageProps} />
+        </RootLayout>
+      </SnackbarProvider>
     </SessionProvider>
   );
 }

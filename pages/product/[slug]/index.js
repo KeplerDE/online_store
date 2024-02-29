@@ -6,6 +6,9 @@ import ProductLike from '@/components/product/ProductLike';
 import ProductRating from '@/components/product/ProductRating';
 import UserReviews from '@/components/product/UserReviews';
 import CouponCode from '@/components/product/CouponCode';
+import AddToCart from '@/components/product/AddToCart';
+
+
 
 dayjs.extend(relativeTime);
 
@@ -84,6 +87,11 @@ export default function ProductViewPage({ product, metadata }) {
                 <small>Brand: {product.brand}</small>
                 <ProductRating product={product} />
               </div>
+
+              <div className="my-3">
+                <AddToCart product={product} />
+              </div>
+
             </div>
           </div>
         </div>
