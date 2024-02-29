@@ -27,7 +27,7 @@ export default function CouponCode({ product }) {
       {percentOff > 0 && (
         <h4 className="alert alert-danger">
           🔥 ${((product.price * (100 - percentOff)) / 100).toFixed(2)} (
-          {percentOff}% скидка применена)
+          {percentOff}% discount coupon applied)
         </h4>
       )}
       {product?.previousPrice > product?.price && (

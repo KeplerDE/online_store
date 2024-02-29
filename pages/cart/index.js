@@ -3,7 +3,7 @@ import Step1 from "@/components/cart/Step1";
 import Step2 from "@/components/cart/Step2";
 import Step3 from "@/components/cart/Step3";
 import { GoCheckCircleFill } from "react-icons/go"; 
-import Link from "next/link";
+import { useRouter } from 'next/router';
 import { useCart } from "@/context/cart"; 
 
 export default function Cart() {
@@ -12,6 +12,9 @@ export default function Cart() {
   
   // state
   const [step, setStep] = useState(1);
+  
+  // next router
+  const router = useRouter();
 
   const handleNextStep = () => setStep(step + 1);
   const handlePrevStep = () => setStep(step - 1);
@@ -25,9 +28,12 @@ export default function Cart() {
       <div className="container d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
           <p className="lead">Your cart is empty!</p>
-          <Link href="/shop">
-            <a className="btn btn-lg btn-primary btn-raised">Continue Shopping</a>
-          </Link>
+          <button 
+            className="btn btn-lg btn-primary btn-raised" 
+            onClick={() => router.push('/shop')}
+          >
+            Continue Shopping
+          </button>
         </div>
       </div>
     );
