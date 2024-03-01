@@ -4,41 +4,62 @@ import toast from "react-hot-toast";
 import OrderSummary from "./OrderSummary";
 
 export default function Step3({ onPrevStep }) {
-  const { cartItems } = useCart();
+  const { cartItems, validCoupon, couponCode } = useCart();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
-    try {
-      const cartData = cartItems.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-      }));
+    console.log("Начало процесса оформления заказа...");
 
+    try {
+      // Подготовка данных для запроса
+      const payload = {
+        cartItems: cartItems.map((item) => ({
+          _id: item._id,
+          quantity: item.quantity,
+        })),
+      };
+
+      // Добавление кода купона, если он действителен
+      if(validCoupon) {
+        payload.couponCode = couponCode;
+        console.log(`Применение кода купона: ${couponCode}`);
+      } else {
+        console.log("Действительный код купона отсутствует.");
+      }
+
+      console.log("Данные для создания сессии Stripe:", payload);
+
+      // Отправка запроса на сервер
       const response = await fetch(`${process.env.API}/user/stripe/session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          cartItems: cartData,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log("Статус ответа от API:", response.status);
+
+      // Обработка ответа от сервера
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Данные об ошибке:", errorData);
         toast.error(errorData.err);
       } else {
         const data = await response.json();
-        window.location.href = data.url;
+        console.log("Сессия Stripe успешно создана, перенаправление...", data.url);
+        window.location.href = data.url; // Перенаправление на страницу оплаты Stripe
       }
     } catch (err) {
-      console.error(err);
-      toast.error("An error occurred. Please try again.");
+      console.error("Исключение во время выполнения запроса:", err);
+      toast.error("Произошла ошибка. Пожалуйста, попробуйте снова.");
     } finally {
       setLoading(false);
+      console.log("Процесс оформления заказа завершён.");
     }
   };
+
 
   return (
     <div className="container">
