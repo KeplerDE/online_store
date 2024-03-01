@@ -81,6 +81,25 @@ export default function ProductCreate() {
         }
       />
       
+
+      {/* Sale */}
+      {updatingProduct && (
+        <div className="form-group">
+          <input
+            type="number"
+            placeholder="Previous Price"
+            min="1"
+            name="previousPrice"
+            className="form-control p-2 my-2"
+            value={updatingProduct.previousPrice}
+            onChange={(e) => setUpdatingProduct((prevState) => ({
+              ...prevState,
+              previousPrice: e.target.value,
+            }))}
+          />
+        </div>
+      )}
+
       {/* Color Input */}
       <input
         type="text"
@@ -93,7 +112,8 @@ export default function ProductCreate() {
         }
         className="form-control p-2 my-2"
       />
-      
+
+
       {/* Brand Input */}
       <input
         type="text"
@@ -235,6 +255,8 @@ export default function ProductCreate() {
     </div>
   ))}
 </div>
+
+
 
 
 
