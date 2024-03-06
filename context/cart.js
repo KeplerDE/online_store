@@ -74,6 +74,14 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+
+  //clear Cart
+
+  const clearCart = () => {
+    localStorage.removeItem("cartItems");
+
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -85,7 +93,8 @@ export const CartProvider = ({ children }) => {
         setCouponCode,
         handleCoupon,
         percentOff,
-        validCoupon
+        validCoupon,
+        clearCart
       }}
     >
       {children}

@@ -1,6 +1,15 @@
+"use client";
 import { useRouter } from 'next/router';
+import { useCart } from '@/context/cart'
+import { useEffect } from 'react';
 
-export default function UserStripeSuccess() {
+export default function UserStripeSuccess() {4
+
+  const { clearCart } = useCart();
+  useEffect(() => {
+    clearCart();
+  }, []);
+
   const router = useRouter();
 
   // Function to handle the click event
@@ -18,7 +27,7 @@ export default function UserStripeSuccess() {
           </p>
           <hr />
           {/* Adding onClick event handler to the button */}
-          <button className="btn btn-primary btn-raised" onClick={viewOrderStatus}>
+          <button className="btn btn-primary btn-rsed" onClick={viewOrderStatus}>
             View Order Status
           </button>
         </div>
