@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast';
-import Navbar from './Navbar';
+import Navbar from './nav/Navbar';
 import { CategoryProvider } from "@/context/category";
 import { SessionProvider } from 'next-auth/react';
 import { TagProvider } from "@/context/tag";

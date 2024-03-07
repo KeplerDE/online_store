@@ -1,14 +1,10 @@
-export default function Userdashboard() {
-    return (
-        <div className="container">
-            <div className="row">
-                <div className="column">
-                    <p className="lead">
-                        Dashboard
-                    </p>
-                    <hr />...
-                </div>
-            </div>
-        </div>
-    )
-}  
+import UserNav from "@/components/nav/UserNav";
+
+export default function UserDashboard({ children }) {
+  return (
+    <>
+      <UserNav />
+      {children}
+    </>
+  );
+}
